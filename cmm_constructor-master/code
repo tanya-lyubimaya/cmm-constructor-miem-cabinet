@@ -1,0 +1,186 @@
+function fulfill(formUrl, spreadsheetId, questions) {
+  //open form and delete default question
+  var form = FormApp.openByUrl(formUrl);
+  form.deleteItem(0);
+
+  // set form as a quiz, set emails collection, give summary after submitting, set one response per students
+  form.setIsQuiz(true);
+  form.setPublishingSummary(true);
+  form.setLimitOneResponsePerUser(true);
+  form.setRequireLogin(true);
+
+
+  //open spreadsheet
+  var spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+
+
+  //for each topic get indexes of questions (rows)
+  var numOfTopics = questions.length;
+  for(var i = 0; i < numOfTopics; i++) {
+    var indexes = [];
+
+    if(questions[i] === 0) {
+      Logger.log("0 question");
+      indexes.push(0);
+    }
+
+    else {
+      Logger.log("more than 0 question");
+      var sheet = spreadsheet.getSheets()[i];
+      var numOfQuestions = sheet.getLastRow();
+
+      var j = 0;
+      while(j < questions[i]) {
+        if(j === 0) {
+          indexes.push(randomNumber(2, numOfQuestions));
+          j++;
+        }
+        else {
+          var number = randomNumber(2, numOfQuestions);
+          if(indexes.indexOf(number) === -1) {
+            indexes.push(number);
+            j++;
+          }
+        }
+      }
+      Logger.log(indexes);
+    }
+
+
+    //create questions
+    if(indexes[0] != 0) {
+      Logger.log("first index != 0");
+
+      for(var k = 0; k < indexes.length; k++) {
+        var typeOfQuestion = sheet.getRange(indexes[k], 1).getValue();
+
+        if (typeOfQuestion === "С одним правильным ответом") {
+          var qtitle = sheet.getRange(indexes[k], 2).getValue();
+          var question = form.addMultipleChoiceItem().setTitle(qtitle);
+          var rightAnswerIndex = Number(sheet.getRange(indexes[k], 3).getValue()) + 3;
+          var answers = [];
+          for(var q = 4; q < 14; q++) {
+            var answer = sheet.getRange(indexes[k], q).getValue();
+            if(answer !== "") {
+              if(q === rightAnswerIndex)
+                answers.push(question.createChoice(answer, true));
+              else
+                answers.push(question.createChoice(answer, false));
+            }
+          }
+          question.setChoices(answers);
+        }
+
+        else {
+          var qtitle = sheet.getRange(indexes[k], 2).getValue();
+          var question = form.addCheckboxItem().setTitle(qtitle);
+          var rightAnswerIndexes = [];
+          var raIndexes = (sheet.getRange(indexes[k], 3).getValue()).split(';');
+          for(var m = 0; m < raIndexes.length; m++)
+            rightAnswerIndexes.push(Number(raIndexes[m]) + 3);
+          var answers = [];
+          for(var q = 4; q < 14; q++) {
+            var answer = sheet.getRange(indexes[k], q).getValue();
+            if(answer !== "") {
+              if(rightAnswerIndexes.indexOf(q) !== -1)
+                answers.push(question.createChoice(answer, true));
+              else
+                answers.push(question.createChoice(answer, false));
+            }
+          }
+          question.setChoices(answers);
+        }
+
+        question.setPoints(1);
+      }
+    }
+
+    else {
+      Logger.log("first index = 0");
+    }
+
+  }
+}
+
+
+//get rundom number
+function randomNumber(min, max) {
+  var rand = min - 0.5 + Math.random() * (max - min + 1);
+  return Math.round(rand);
+}
+
+
+//get student score in Google Form
+function getScore(formUrl, studentEmail) {
+  var form = FormApp.openByUrl(formUrl);
+  var formResponses = form.getResponses();
+
+  var score = 0;
+  for(var i = 0; i < formResponses.length; i ++) {
+    if(formResponses[i].getRespondentEmail() === studentEmail) {
+      var responses = formResponses[i].getGradableItemResponses();
+      for(var j = 0; j < responses.length; j ++) {
+        score = score + responses[j].getScore();
+      }
+    }
+  }
+
+  return score;
+}
+
+
+//get user submission id
+function getSubId(courseId, courseworkId, studentId) {
+  var listOfSubs;
+  var subId;
+
+  var pageTokenSubs = Classroom.Courses.CourseWork.StudentSubmissions.list(courseId, courseworkId).nextPageToken;
+  if(pageTokenSubs === undefined) {
+    listOfSubs = Classroom.Courses.CourseWork.StudentSubmissions.list(courseId, courseworkId).studentSubmissions;
+    for each(var sub in listOfSubs)
+      if(sub.userId === studentId) {
+        subId = sub.id;
+        break;
+      }
+  }
+  else {
+    var pageTokenSubs = Classroom.Courses.CourseWork.StudentSubmissions.list(courseId, courseworkId).nextPageToken;
+    while(pageTokenSubs) {
+      var response = Classroom.Courses.CourseWork.StudentSubmissions.list(courseId, courseworkId, {pageToken: pageTokenSubs});
+      listOfSubs = response.studentSubmissions;
+      for each(var sub in listOfSubs)
+        if(sub.userId === studentId) {
+          subId = sub.id;
+          break;
+        }
+      pageTokenSubs = response.nextPageToken;
+    }
+  }
+
+  return subId;
+}
+
+
+//set grades in final coursework
+function setGrades(courseId, formUrl, studentEmail, studentId, courseworkId) {
+  var score = getScore(formUrl, studentEmail);
+  Logger.log(score);
+  var subId = getSubId(courseId, courseworkId, studentId);
+  Logger.log(subId);
+
+  var resource = {'draftGrade' : score};
+  var updateMask = {'updateMask' : 'draftGrade'};
+  var result = Classroom.Courses.CourseWork.StudentSubmissions.patch(resource, courseId, courseworkId, subId, updateMask);
+  Logger.log(result);
+
+  resource = {'assignedGrade' : score};
+  updateMask = {'updateMask' : 'assignedGrade'};
+  result = Classroom.Courses.CourseWork.StudentSubmissions.patch(resource, courseId, courseworkId, subId, updateMask);
+  Logger.log(result);
+
+}
+
+function printCW() {
+  var list = Classroom.Courses.CourseWork.list("60617248915").courseWork;
+  Logger.log(list);
+}

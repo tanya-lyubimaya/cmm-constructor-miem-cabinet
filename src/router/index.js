@@ -155,12 +155,31 @@ export const constantRoutes = [
   },
 
   {
+    path: 'for-teachers',
+    component: Layout,
+    redirect: '/for-teachers/cmm-constructor',
+    name: 'For teachers',
+    meta: {
+      title: 'Преподавателям',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'cmm-constructor',
+        //component: () => import('@/views/for-teachers/cmm-constructor/index'), // Parent router-view
+        name: 'CMM Constructor',
+        meta: { title: 'Конструктор КИМов', icon: 'tree'},
+      }
+    ]
+  },
+
+  {
     path: 'project-repo',
     component: Layout,
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'Репозиторий проекта', icon: 'link' }
+        path: 'https://github.com/shorygina/cmm-constructor-miem-cabinet',
+        meta: { title: 'Github проекта', icon: 'link' }
       }
     ]
   },

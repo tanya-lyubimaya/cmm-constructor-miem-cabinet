@@ -169,7 +169,7 @@ export const constantRoutes = [
         path: 'cmm-constructor',
         name: 'CMM Constructor',
         // TODO: Переписать main.html в main.vue
-        //component: () => import('@/views/cmm_constructor-master/templates/main'),
+        component: () => import('@/views/cmm-constructor/main'),
         meta: { title: 'Конструктор КИМов'}
       }
     ]

@@ -155,15 +155,24 @@ export const constantRoutes = [
   },
 
   {
-    path: '/cmm-constructor',
+    path: '/for-teachers',
     component: Layout,
-    children: [{
-      path: 'cmm-constructor',
-      name: 'CMM Constructor',
-      // TODO: Переписать main.html в main.vue
-      //component: () => import('@/views/cmm_constructor-master/templates/main'),
-      meta: { title: 'Конструктор КИМов', icon: 'tree' }
-    }]
+    redirect: '/for-teachers/cmm-constructor',
+    name: 'For teachers',
+    alwaysShow: true,
+    meta: {
+      title: 'Преподавателям',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'cmm-constructor',
+        name: 'CMM Constructor',
+        // TODO: Переписать main.html в main.vue
+        //component: () => import('@/views/cmm_constructor-master/templates/main'),
+        meta: { title: 'Конструктор КИМов'}
+      }
+    ]
   },
 
   {

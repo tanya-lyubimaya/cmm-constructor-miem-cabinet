@@ -1,85 +1,121 @@
 <template>
-  <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;" />
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="wrapper">
+        <div class="navigation">
+            <section class="container">
+                <a class="navigation-title" href="/enter" title="База КИМов - Сервис для преподавателей МИЭМ НИУ ВШЭ">
+                    <h1 class="title">База КИМов</h1>
+                </a>
+            </section>
+        </div>
+        <section class="container" id="base">
+            <h3 class="title">База КИМов</h3>
+            <div id="enterNameOfCMM" style="display: none">
+            </div>
+            <br>
+            <br><br><br>
+            <h3 class="title">Мои курсы</h3>
+        </section>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      }
-    }
-  },
-  methods: {
-    onSubmit() {
-      this.$message('submit!')
-    },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
-        type: 'warning'
-      })
-    }
-  }
+<style>
+    .wrapper {
+    display: block;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    position: relative;
+    width: 100%;
 }
-</script>
-
-<style scoped>
-.line{
-  text-align: center;
-}
+    .navigation {
+        background: #f4f5f6;
+        border-bottom: .1rem solid #d1d1d1;
+        display: block;
+        height: 5.2rem;
+        left: 0;
+        max-width: 100%;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+    }
+    .navigation .navigation-link, .navigation .navigation-title, .navigation .title {
+        display: inline;
+        font-size: 1.6rem;
+        line-height: 5.2rem;
+        padding: 0;
+        text-decoration: none;
+        margin: 30px;
+    }
+    .navigation .navigation-title, .navigation .title {
+        color: #606c76;
+        font-family: Roboto,sans-serif;
+        position: relative;
+        font-size: 2rem;
+    }
+    a {
+        color: #9b4dca;
+        text-decoration: none;
+    }
+    p {
+        margin-top: 0;
+    }
+        .header .button {
+        margin-bottom: 4rem;
+        margin-top: 2rem;
+    }
+    .header .img path {
+        animation: 7s a forwards;
+        fill: #9b4dca;
+        stroke: #9b4dca;
+        stroke-dasharray: 38321;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+    }
+    .wrapper>.container {
+        padding-bottom: 7.5rem;
+        padding-top: 7.5rem;
+    }
+    #base {
+        max-width: 100rem;
+    }
+    .container {
+        margin: 0 auto;
+        padding: 0 2.0rem;
+        position: relative;
+        width: 100%;
+    }
+    h3 {
+        font-size: 2.8rem;
+        line-height: 1.3;
+    }
+    .button-clear {
+        font-size: 0.9rem;
+        height: 2.8rem;
+        line-height: 2.8rem;
+        padding: 0 2.3rem;
+    }
+    .footer {
+        padding: 8rem 0 2rem;
+    }
+    .footer .copyright {
+        padding-right: 7rem;
+        padding-left: 7rem;
+    }
+    .footer .nav {
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .footer .nav .link {
+        display: inline-block;
+        margin-left: 1.2rem;
+        padding: 0;
+    }
+    .footer .nav .icon {
+        fill: #9b4dca;
+        height: 2rem;
+    }
 </style>
-

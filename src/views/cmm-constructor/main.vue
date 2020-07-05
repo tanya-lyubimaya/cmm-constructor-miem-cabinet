@@ -10,7 +10,26 @@
         <section class="container" id="base">
             <h3 class="title">База КИМов</h3>
             <a class="button button-outline" href="javascript:flipflop('enterNameOfCMM');">Создать КИМ</a>
+
             <div id="enterNameOfCMM" style="display: none">
+              <br>
+                <form action="/main" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                        {{ form.cmm_name.label }}
+                        {{ form.cmm_name(size=32) }}
+                        {% for error in form.cmm_name.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    {{ form.submit() }}
+                </form>
+              <!--{{ form.name(class="form-control", placeholder="Имя", **{'v-model':'user.name'}) }}-->
+              <!--
+                <el-form ref="form" :model="form" label-width="120px">
+                  <el-form-item label="Activity name">
+                    <el-input v-model="form.name"/>
+                  </el-form-item>
+                </el-form>
+                -->
             </div>
             <br>
             <br><br><br>
@@ -133,6 +152,36 @@
 <style>
   @import 'https://cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css';
 </style>
+
+<script>
+export default {
+  data() {
+    return {
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      }
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$message('submit!')
+    },
+    onCancel() {
+      this.$message({
+        message: 'cancel!',
+        type: 'warning'
+      })
+    }
+  }
+}
+</script>
 
 <!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

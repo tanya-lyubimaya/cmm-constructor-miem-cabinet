@@ -9,6 +9,7 @@
         </div>
         <section class="container" id="base">
             <h3 class="title">База КИМов</h3>
+            <a class="button button-outline" href="javascript:flipflop('enterNameOfCMM');">Создать КИМ</a>
             <div id="enterNameOfCMM" style="display: none">
             </div>
             <br>

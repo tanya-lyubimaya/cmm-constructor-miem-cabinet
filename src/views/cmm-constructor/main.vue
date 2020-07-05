@@ -119,3 +119,22 @@
         height: 2rem;
     }
 </style>
+
+<style>
+  @import 'https://cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css';
+</style>
+<style>
+  @import 'https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic';
+</style>
+<style>
+  @import 'https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css';
+</style>
+<style>
+  @import 'https://cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css';
+</style>
+
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+-->

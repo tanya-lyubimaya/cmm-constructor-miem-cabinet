@@ -170,7 +170,14 @@ export const constantRoutes = [
         name: 'CMM Constructor',
         // TODO: Переписать main.html в main.vue
         component: () => import('@/views/cmm-constructor/main'),
-        meta: { title: 'Конструктор КИМов'}
+        meta: { title: 'Конструктор КИМов' }
+      },
+      {
+        path: 'createVariants',
+        name: 'CMM Constructor',
+        // TODO: Переписать main.html в main.vue
+        component: () => import('@/views/cmm-constructor/createVariants'),
+        meta: { title: 'Формирование билетов' }
       }
     ]
   },

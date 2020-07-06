@@ -35,6 +35,7 @@ def main():
     form = NameForm()
     if form.validate_on_submit():
         create_cmm(form.cmm_name.data, USER_EMAIL)
+        print('create_cmm')
         return redirect(url_for('main'))
 
     return render_template('main.html', data=data, form=form)

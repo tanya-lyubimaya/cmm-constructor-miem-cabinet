@@ -11,7 +11,13 @@
             <h3 class="title">База КИМов</h3>
             <a class="button button-outline" href="javascript:flipflop('enterNameOfCMM');">Создать КИМ</a>
 
-            <div id="enterNameOfCMM" style="display: none">
+            <div id="enterNameOfCMM">
+              <el-form ref="form" :model="form" label-width="120px">
+                  <el-form-item label="Название КИМа">
+                    <el-input v-model="form.name" />
+                  </el-form-item>
+              </el-form>
+            <!--
               <br>
                 <form action="/main" method="post" novalidate>
                     {{ form.hidden_tag() }}
@@ -22,7 +28,7 @@
                         {% endfor %}
                     {{ form.submit() }}
                 </form>
-              <!--{{ form.name(class="form-control", placeholder="Имя", **{'v-model':'user.name'}) }}-->
+              {{ form.name(class="form-control", placeholder="Имя", **{'v-model':'user.name'}) }}-->
               <!--
                 <el-form ref="form" :model="form" label-width="120px">
                   <el-form-item label="Activity name">

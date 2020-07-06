@@ -3,6 +3,8 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, redirect, request, url_for, jsonify
 from flask_wtf import FlaskForm
+from flask_restful import Resource, Api, reqparse
+from flask_cors import CORS
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from database import search_for_spreadsheet
@@ -22,12 +24,20 @@ class NameForm(FlaskForm):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'houston-we-have-a-problem'
 USER_EMAIL = "aavilgelm@miem.hse.ru"
+api = Api(app)
+parser = reqparse.RequestParser()
+parser.add_argument("cmm_name")
+
+class CMMname(Resource):
+  def post(self):
+    args = parser.parse_args()
+
+api.add_resource(CMMname, "/cmm-name")
 
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():
     authorization(USER_EMAIL)
-    print('sadsdsa')
     courses = get_user_courses(USER_EMAIL)
     cmms = get_user_cmms(USER_EMAIL)
     data = {"courses": courses, "cmms": cmms}

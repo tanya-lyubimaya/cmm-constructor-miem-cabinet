@@ -62,6 +62,9 @@ export default {
       //this.$message('submit!')
       //this.$http.post('/api/something', JSON.stringify(this.form));
       this.$message(JSON.stringify(this.form.name))
+      axios.post('http://127.0.0.1:5000/cmm-name', {
+        cmm_name: this.name
+      })
     },
     onCancel() {
       this.$message({

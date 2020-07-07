@@ -24,16 +24,12 @@ class NameForm(FlaskForm):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'houston-we-have-a-problem'
 USER_EMAIL = "aavilgelm@miem.hse.ru"
+CORS(app, resources={r'/*': {'origins': '*'}})
 api = Api(app)
-parser = reqparse.RequestParser()
-parser.add_argument("cmm_name")
 
-class CMMname(Resource):
-  def post(self):
-    args = parser.parse_args()
-
-api.add_resource(CMMname, "/cmm-name")
-
+@app.route('/ping', methods=['GET'])
+def ping_pong():
+    return jsonify('pong!')
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():
@@ -41,7 +37,7 @@ def main():
     courses = get_user_courses(USER_EMAIL)
     cmms = get_user_cmms(USER_EMAIL)
     data = {"courses": courses, "cmms": cmms}
-
+    
     form = NameForm()
     if form.validate_on_submit():
         create_cmm(form.cmm_name.data, USER_EMAIL)

@@ -44,6 +44,12 @@ export const constantRoutes = [
   },
 
   {
+    path: '/books',
+    name: 'Books',
+    component: () => import('@/views/cmm-constructor/books'),
+  },
+
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',

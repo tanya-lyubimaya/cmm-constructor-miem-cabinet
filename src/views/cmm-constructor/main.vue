@@ -4,9 +4,11 @@
             <section class="container">
                 <a class="navigation-title" href="/enter" title="База КИМов - Сервис для преподавателей МИЭМ НИУ ВШЭ">
                     <h1 class="title">База КИМов</h1>
+                    <p>{{ msg }}</p>
                 </a>
             </section>
         </div>
+        <alert :message=message v-if="showMessage"></alert>
         <section class="container" id="base">
             <h3 class="title">База КИМов</h3>
             <a class="button button-outline" href="javascript:flipflop('enterNameOfCMM');">Создать КИМ</a>
@@ -49,30 +51,35 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
+  name: 'CMM Constructor',
   data() {
     return {
       form: {
         name: '',
-      }
+      },
+       msg: 'Hello',
+      showMessage: false,
     }
   },
   methods: {
-    onSubmit() {
-      //this.$message('submit!')
-      //this.$http.post('/api/something', JSON.stringify(this.form));
-      this.$message(JSON.stringify(this.form.name))
-      axios.post('http://127.0.0.1:5000/cmm-name', {
-        cmm_name: this.name
-      })
+    getMessage() {
+      const path = 'http://localhost:9528//ping';
+      axios.get(path)
+        .then((res) => {
+          this.msg = res.data;
+        })
+        .catch((error) => {
+          // eslint-выключение следующей строки
+          console.error(error);
+        });
     },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
-        type: 'warning'
-      })
-    }
-  }
+  },
+  created() {
+    this.getMessage();
+  },
 }
 </script>
 

@@ -11,24 +11,32 @@
       <h4>Заполните данные для генерации вариантов из КИМа {{ spreadsheetName }} </h4>
       <div v-if="spreadsheetInfo">
         <el-form>
+          
           <h4>Укажите количество вопросов из каждого раздела</h4>
+          
           <div v-for="info in spreadsheetInfo" :key="info.title">
           <p>{{ info.title }}</p>
-          <el-select name="info.title" id="info.title" class="select-topics">
-            <el-option v-for="i in info.amount" :value="i" :key="i">{{ i }}</el-option>
+          <el-select ref="select-topics" name="info.title" v-model="info.value" id="info.title">
+            <el-option :key="0" :value="''"></el-option>
+            <el-option v-for="i in info.amount" :value="i" :key="i">
+              {{ i }}
+            </el-option>
           </el-select>
           </div>
+          
           <h4>Укажите количество вариантов</h4>
-          <el-input type="number" placeholder="For example, 10" name="amountOfVariants" id="amountOfVariants" min="1"></el-input>
+          <el-input v-model="amountOfVariants" type="number" placeholder="For example, 10" name="amountOfVariants" id="amountOfVariants" min="1"></el-input>
+          
           <el-form-item>
-            <el-button type="primary" native-type="submit" @click="onSubmit">Create</el-button>
+            <el-button
+              type="primary" 
+              id="submit" 
+              native-type="submit" 
+              @click="onSubmit">Create</el-button>
             <el-button @click="onCancel">Cancel</el-button>
           </el-form-item>
         </el-form>
-        
       </div>
-        
-
     </section>
   </div>
 </template>
@@ -37,17 +45,31 @@
 export default {
   data() {
     return {
+      amountOfVariants: '',
       spreadsheetName: 'test #1',
       spreadsheetInfo: [
-        {title: 'Geography', amount: 5},
-        {title: 'Biology', amount: 10},
-        {title: 'Maths', amount: 7}
+        {title: 'Geography', amount: 5, value: ''},
+        {title: 'Biology', amount: 10, value: ''},
+        {title: 'Maths', amount: 7, value: ''}
         ]
     }
   },
   methods: {
     onSubmit() {
-      this.$message('submit!')
+      //this.$message('submit!')
+      const spreadsheetInfo = JSON.parse(this.dataset.spreadsheetInfo);
+      const spreadsheetId = this.dataset.spreadsheetId;
+      createVariants(spreadsheetInfo, spreadsheetId);
+    },
+    createVariants(spreadsheetInfo, spreadsheetId) {
+      let amount = this.amountOfVariants;
+      let questions = [];
+      for (let i = 0; i < spreadsheetInfo; i++) {
+        let questNum = this.$refs.select-topics.value
+        console.log(questNum)
+        //questions = questions.push;
+      }
+      //const questionsAsString;
     },
     onCancel() {
       this.$message({
@@ -55,23 +77,16 @@ export default {
         type: 'warning'
       })
     }
-}
-  
-  /*data () {
-    spreadsheetInfo: 'true';
-    title: "Connect"
-  },
-  methods: {
-    onSubmit() {
-      const spreadsheetInfo = JSON.parse(this.dataset.spreadsheetInfo);
-      const spreadsheetId = this.dataset.spreadsheetId;
-      createVariants(spreadsheetInfo, spreadsheetId);
-    },
-
-    createVariants(spreadsheetInfo, spreadsheetId) {
-
-    }
-  }*/
+    /*function createVariants(spreadsheetInfo, spreadsheetId) {
+        let amount = $('#amountOfVariants').val();
+        let questions = [];
+        document
+            .querySelectorAll('.select-topics')
+            .forEach(select => questions.push($(select).val()));
+        const questionsAsString = questions.join(',');
+        window.location.href = `/create_variants?questions=${questionsAsString}&amount=${amount}&spreadsheet_id=${spreadsheetId}`;
+    }*/
+  }
 }
 
 </script>

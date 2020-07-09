@@ -10,9 +10,9 @@
         </div>
         <section class="container" id="base">
             <h3 class="title">База КИМов</h3>
-            <a class="button button-outline" href="javascript:flipflop('enterNameOfCMM');">Создать КИМ</a>
+            <el-button type="primary" native-type="submit" class='button button-outline' v-on:click="seen = !seen">Создать КИМ</el-button>
 
-            <div id="enterNameOfCMM">
+            <div id="app" v-if="seen">
               <el-form ref="form" :model="form" label-width="120px" id="cmm-name-form">
                   <el-form-item label="Название КИМа">
                     <el-input v-model="form.name" class="input" name="cmm-name"/>
@@ -34,13 +34,6 @@
                     {{ form.submit() }}
                 </form>
               {{ form.name(class="form-control", placeholder="Имя", **{'v-model':'user.name'}) }}-->
-              <!--
-                <el-form ref="form" :model="form" label-width="120px">
-                  <el-form-item label="Activity name">
-                    <el-input v-model="form.name"/>
-                  </el-form-item>
-                </el-form>
-                -->
             </div>
             <br>
             <br><br><br>
@@ -58,8 +51,9 @@ export default {
       form: {
         name: '',
       },
-       msg: 'Hello',
+      msg: 'Hello',
       showMessage: false,
+      seen: false,
     }
   },
   methods: {

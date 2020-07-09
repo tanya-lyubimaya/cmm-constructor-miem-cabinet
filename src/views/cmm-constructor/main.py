@@ -64,12 +64,24 @@ def all_books():
         response_object['books'] = BOOKS
     return jsonify(response_object)
 
-@app.route('/main', methods=['GET', 'POST'])
-def main():
+
+@app.route('/user-courses', methods=['GET', 'POST'])
+def post_user_courses():
+    print('post_user_courses')
     authorization(USER_EMAIL)
     courses = get_user_courses(USER_EMAIL)
+    response_object = {'courses': courses}
+    if request.method == 'GET':
+        print('POST JSON WITH COURSES SUCCESSFULLY')
+    return jsonify(response_object)
+
+@app.route('/main', methods=['GET', 'POST'])
+def main():
+    #authorization(USER_EMAIL)
+    #courses = get_user_courses(USER_EMAIL)
     cmms = get_user_cmms(USER_EMAIL)
-    data = {"courses": courses, "cmms": cmms}
+    #data = {"courses": courses, "cmms": cmms}
+    post_user_courses()
     
     form = NameForm()
     if form.validate_on_submit():
@@ -77,7 +89,8 @@ def main():
         print('create_cmm')
         return redirect(url_for('main'))
 
-    return render_template('main.html', data=data, form=form)
+    #return render_template('main.html', data=data, form=form)
+    return None
 
 
 @app.route('/open_folder', methods=['GET', 'POST'])

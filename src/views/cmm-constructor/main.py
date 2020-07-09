@@ -45,13 +45,24 @@ BOOKS = [
     }
 ]
 
-@app.route('/books', methods=['GET'])
+@app.route('/cmm-name', methods=['GET', 'POST'])
 def all_books():
-    print('ALL BOOKS')
-    return jsonify({
-        'status': 'success',
-        'books': BOOKS
-    })
+    response_object = {'status': 'success'}
+    if request.method == 'POST':
+        """post_data = request.get_json()
+        BOOKS.append({
+            'title': post_data.get('name'),
+            'author': post_data.get('name'),
+            'read': post_data.get('name')
+        })
+        response_object['message'] = 'Book added!'"""
+        post_data = request.get_json()
+        print('GOT JSON SUCCESSFULLY')
+        #response_object['message'] = post_data.get('name')
+        print(post_data)
+    else:
+        response_object['books'] = BOOKS
+    return jsonify(response_object)
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():

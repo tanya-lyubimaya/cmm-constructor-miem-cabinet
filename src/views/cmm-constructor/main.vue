@@ -8,7 +8,6 @@
                 </a>
             </section>
         </div>
-        <alert :message=message v-if="showMessage"></alert>
         <section class="container" id="base">
             <h3 class="title">База КИМов</h3>
             <a class="button button-outline" href="javascript:flipflop('enterNameOfCMM');">Создать КИМ</a>
@@ -54,7 +53,6 @@
 import axios from 'axios';
 
 export default {
-  name: 'CMM Constructor',
   data() {
     return {
       form: {
@@ -65,21 +63,22 @@ export default {
     }
   },
   methods: {
-    getMessage() {
-      const path = 'http://localhost:9528//ping';
-      axios.get(path)
-        .then((res) => {
-          this.msg = res.data;
-        })
-        .catch((error) => {
-          // eslint-выключение следующей строки
-          console.error(error);
-        });
+    onSubmit() {
+      this.$message(JSON.stringify(this.form.name))
+      axios.post('http://localhost:5000/cmm-name', {'cmm-name': JSON.stringify(this.form.name)})
+      .then((response) => {
+        console.log(response);
+      }, (error) => {
+        console.log(error);
+      });
     },
-  },
-  created() {
-    this.getMessage();
-  },
+    onCancel() {
+      this.$message({
+        message: 'cancel!',
+        type: 'warning'
+      })
+    }
+  }
 }
 </script>
 

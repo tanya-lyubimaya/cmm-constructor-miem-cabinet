@@ -7,7 +7,7 @@
         </a>
       </section>
     </div>
-    <section class="container" id="ss-data">
+    <section class="container" id="base">
       <h4>Заполните данные для генерации вариантов из КИМа {{ spreadsheetName }} </h4>
       <div v-if="spreadsheetInfo">
         <el-form>

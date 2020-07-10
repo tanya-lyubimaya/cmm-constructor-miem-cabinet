@@ -4,7 +4,6 @@
             <section class="container">
                 <a class="navigation-title" href="/enter" title="База КИМов - Сервис для преподавателей МИЭМ НИУ ВШЭ">
                     <h1 class="title">База КИМов</h1>
-                    <p>{{ msg }}</p>
                 </a>
             </section>
         </div>
@@ -15,7 +14,8 @@
 
             <div id="enterNameOfCMM">
               <el-form ref="form" :model="form" label-width="120px" id="cmm-name-form">
-                  <el-form-item label="Название КИМа">
+                  <el-form-item>
+                    <label for="cmm-name">Название КИМа</label>
                     <el-input v-model="form.name" class="input" name="cmm-name"/>
                   </el-form-item>
                   <el-form-item>

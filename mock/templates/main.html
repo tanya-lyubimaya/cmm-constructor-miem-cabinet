@@ -16,6 +16,7 @@
         element = document.getElementById(id);
         if(element)
             element.style.display = element.style.display === "none" ? "" : "none";
+        console.log('flipflop')
     }
 </script>
 
@@ -28,29 +29,34 @@
           }).done(function () {
               location.reload();
           })
+          console.log('deleteCMM')
     }
 </script>
 
 <script>
     function getInformationAboutCMM(spreadsheetId, spreadsheetName) {
         window.location.href = `/get_information?spreadsheet_id=${spreadsheetId}&spreadsheet_name=${spreadsheetName}`;
+        console.log('getInformationAboutCMM')
     }
 </script>
 
 <script>
     function getCourse(spreadsheetId) {
         window.location.href = `/get_course?spreadsheet_id=${spreadsheetId}`;
+        console.log('getCourse')
     }
 </script>
 
 <script>
     function deleteVariants(spreadsheetId) {
         window.location.href = `/delete_variants?spreadsheet_id=${spreadsheetId}`
+        console.log('deleteVariants')
     }
 </script>
 
 <script>
     function openFolder(spreadsheetId) {
+        console.log('openFolder')
           $.ajax({
               url: "/open_folder",
               type: "POST",

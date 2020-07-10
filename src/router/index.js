@@ -44,6 +44,12 @@ export const constantRoutes = [
   },
 
   {
+    path: '/books',
+    name: 'Books',
+    component: () => import('@/views/cmm-constructor/books'),
+  },
+
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -155,12 +161,40 @@ export const constantRoutes = [
   },
 
   {
+    path: '/for-teachers',
+    component: Layout,
+    redirect: '/for-teachers/cmm-constructor',
+    name: 'For teachers',
+    alwaysShow: true,
+    meta: {
+      title: 'Преподавателям',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'cmm-constructor',
+        name: 'CMM Constructor',
+        // TODO: Переписать main.html в main.vue
+        component: () => import('@/views/cmm-constructor/main'),
+        meta: { title: 'Конструктор КИМов' }
+      },
+      {
+        path: 'createVariants',
+        name: 'CMM Constructor',
+        // TODO: Переписать main.html в main.vue
+        component: () => import('@/views/cmm-constructor/createVariants'),
+        meta: { title: 'Формирование билетов' }
+      }
+    ]
+  },
+
+  {
     path: 'project-repo',
     component: Layout,
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'Репозиторий проекта', icon: 'link' }
+        path: 'https://github.com/shorygina/cmm-constructor-miem-cabinet',
+        meta: { title: 'Github проекта', icon: 'link' }
       }
     ]
   },
@@ -170,7 +204,7 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

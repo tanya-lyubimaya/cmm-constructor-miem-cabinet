@@ -3,6 +3,8 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, redirect, request, url_for, jsonify
 from flask_wtf import FlaskForm
+from flask_restful import Resource, Api, reqparse
+from flask_cors import CORS
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from database import search_for_spreadsheet
@@ -22,19 +24,46 @@ class NameForm(FlaskForm):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'houston-we-have-a-problem'
 USER_EMAIL = "aavilgelm@miem.hse.ru"
+CORS(app, resources={r'/*': {'origins': '*'}})
+api = Api(app)
 
+BOOKS = [
+    {
+        'title': 'On the Road',
+        'author': 'Jack Kerouac',
+        'read': True
+    },
+    {
+        'title': 'Harry Potter and the Philosopher\'s Stone',
+        'author': 'J. K. Rowling',
+        'read': False
+    },
+    {
+        'title': 'Green Eggs and Ham',
+        'author': 'Dr. Seuss',
+        'read': True
+    }
+]
+
+@app.route('/books', methods=['GET'])
+def all_books():
+    print('ALL BOOKS')
+    return jsonify({
+        'status': 'success',
+        'books': BOOKS
+    })
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():
     authorization(USER_EMAIL)
-    print('sadsdsa')
     courses = get_user_courses(USER_EMAIL)
     cmms = get_user_cmms(USER_EMAIL)
     data = {"courses": courses, "cmms": cmms}
-
+    
     form = NameForm()
     if form.validate_on_submit():
         create_cmm(form.cmm_name.data, USER_EMAIL)
+        print('create_cmm')
         return redirect(url_for('main'))
 
     return render_template('main.html', data=data, form=form)

@@ -34,7 +34,7 @@
       <p>У Вас нет КИМов</p>
       <h3 class="title">Мои КИМы</h3>
       <ul>
-        <li v-for="cmm of cmms" :key="cmm.courseName">{{ course.courseName }}</li>
+        <li v-for="cmm of cmms" :key="cmm.spreadsheetName">{{ cmm.spreadsheetName }}</li>
       </ul>
       <!--
               <br>
@@ -79,6 +79,7 @@ export default {
         name: ''
       },
       courses: [],
+      cmms: [],
       msg: 'Hello',
       showMessage: false,
       seen: false
@@ -114,6 +115,7 @@ export default {
       axios.get(path).then(
         res => {
           this.courses = res.data.courses
+          this.cmms = res.data.cmms
         },
         error => {
           console.error(error)

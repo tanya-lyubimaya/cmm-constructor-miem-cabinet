@@ -66,22 +66,24 @@ def all_books():
 
 
 @app.route('/user-courses', methods=['GET', 'POST'])
-def post_user_courses():
-    print('post_user_courses')
+def post_user_courses_and_cmms():
+    print('post_user_courses_and_cmms')
     authorization(USER_EMAIL)
     courses = get_user_courses(USER_EMAIL)
+    cmms = get_user_cmms(USER_EMAIL)
     response_object = {'courses': courses}
+    response_object['cmms'] = cmms
     if request.method == 'GET':
-        print('POST JSON WITH COURSES SUCCESSFULLY')
+        print('POST JSON WITH COURSES AND CMMS SUCCESSFULLY')
     return jsonify(response_object)
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():
     #authorization(USER_EMAIL)
     #courses = get_user_courses(USER_EMAIL)
-    cmms = get_user_cmms(USER_EMAIL)
+    #cmms = get_user_cmms(USER_EMAIL)
     #data = {"courses": courses, "cmms": cmms}
-    post_user_courses()
+    post_user_courses_and_cmms()
     
     form = NameForm()
     if form.validate_on_submit():

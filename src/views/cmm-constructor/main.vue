@@ -30,8 +30,12 @@
             <el-button @click="onCancel">Cancel</el-button>
           </el-form-item>
         </el-form>
-        <p>У Вас нет КИМов</p>
       </div>
+      <p>У Вас нет КИМов</p>
+      <h3 class="title">Мои КИМы</h3>
+      <ul>
+        <li v-for="cmm of cmms" :key="cmm.courseName">{{ course.courseName }}</li>
+      </ul>
       <!--
               <br>
                 <form action="/main" method="post" novalidate>

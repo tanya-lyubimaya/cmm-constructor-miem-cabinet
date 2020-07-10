@@ -46,20 +46,8 @@
       {{ form.name(class="form-control", placeholder="Имя", **{'v-model':'user.name'}) }}-->
       <h3 class="title">Мои курсы</h3>
       <ul>
-        <li v-for="course of courses" :key="course.courseId">{{ course.courseId }}</li>
+        <li v-for="course of courses" :key="course.courseName">{{ course.courseName }}</li>
       </ul>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Курс</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="course in courses" :key="course">
-            <td>{{ course.courseId }}</td>
-          </tr>
-        </tbody>
-      </table>
       <!--
             <h3 class="title">Мои курсы</h3>
             {% if data.courses %}
@@ -92,6 +80,9 @@ export default {
       seen: false
     }
   },
+  created() {
+    this.getCourses()
+  },
   methods: {
     onSubmit() {
       this.$message(JSON.stringify(this.form.name))
@@ -119,15 +110,11 @@ export default {
       axios.get(path).then(
         res => {
           this.courses = res.data.courses
-          console.log('got data courses')
         },
         error => {
           console.error(error)
         }
       )
-    },
-    created() {
-      this.getCourses()
     }
   }
 }

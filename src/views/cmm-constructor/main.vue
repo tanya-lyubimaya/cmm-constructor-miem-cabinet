@@ -31,40 +31,24 @@
           </el-form-item>
         </el-form>
       </div>
-      <p>У Вас нет КИМов</p>
       <h3 class="title">Мои КИМы</h3>
-      <ul>
-        <li v-for="cmm of cmms" :key="cmm.spreadsheetName">{{ cmm.spreadsheetName }}</li>
-      </ul>
-      <!--
-              <br>
-                <form action="/main" method="post" novalidate>
-                    {{ form.hidden_tag() }}
-                        {{ form.cmm_name.label }}
-                        {{ form.cmm_name(size=32) }}
-                        {% for error in form.cmm_name.errors %}
-                            <span style="color: red;">[{{ error }}]</span>
-                        {% endfor %}
-                    {{ form.submit() }}
-                </form>
-      {{ form.name(class="form-control", placeholder="Имя", **{'v-model':'user.name'}) }}-->
+      <div id="cmms-list-wrapper" v-if="cmms.length > 0">
+        <ul>
+          <li v-for="cmm of cmms" :key="cmm.spreadsheetName">{{ cmm.spreadsheetName }}</li>
+        </ul>
+      </div>
+      <div v-else>
+        <p>У Вас нет КИМов</p>
+      </div>
       <h3 class="title">Мои курсы</h3>
-      <ul>
-        <li v-for="course of courses" :key="course.courseName">{{ course.courseName }}</li>
-      </ul>
-      <!--
-            <h3 class="title">Мои курсы</h3>
-            {% if data.courses %}
-                <ul>
-                    {% for course in data.courses %}
-                        <li class="cmm-name"><a target="_blank" rel="noopener noreferrer" href="{{ course.courseUrl }}">{{ course.courseName }}</a></li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                У вас нет преподаваемых курсов.
-            {% endif %}
-            </div>
-      -->
+      <div id="courses-list-wrapper" v-if="courses.length > 0">
+        <ul>
+          <li v-for="course of courses" :key="course.courseName">{{ course.courseName }}</li>
+        </ul>
+      </div>
+      <div v-else>
+        <p>У Вас нет преподаваемых курсов</p>
+      </div>
     </section>
   </div>
 </template>

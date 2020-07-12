@@ -8,21 +8,21 @@
       </section>
     </div>
     <section class="container" id="base">
-      <h4>Заполните данные для генерации вариантов из КИМа {{ spreadsheetName }} </h4>
+      <h4>Заполните данные для генерации вариантов из КИМа "{{ spreadsheetName }}" </h4>
       <div v-if="spreadsheetInfo">
         <el-form>
           
-          <h4>Укажите количество вопросов из каждого раздела</h4>
+          <p>Укажите количество вопросов из каждого раздела</p>
           
-          <div v-for="info in spreadsheetInfo" :key="info.title">
-          <p>{{ info.title }}</p>
+          <el-form v-for="info in spreadsheetInfo" :key="info.title">
+          <label for="info.title"><p>{{ info.title }}</p></label>
           <el-select ref="selectTopics" name="info.title" v-model="info.value" id="info.title">
             <el-option :key="0" :value="''"></el-option>
             <el-option v-for="i in info.amount" :value="i" :key="i">
               {{ i }}
             </el-option>
           </el-select>
-          </div>
+          </el-form>
           
           <h4>Укажите количество вариантов</h4>
           <el-input 
@@ -39,8 +39,9 @@
               type="primary" 
               id="submit" 
               native-type="submit" 
-              @click="createVariants">Create</el-button>
-            <el-button @click="onCancel">Cancel</el-button>
+              class="buttonCreate"
+              @click="createVariants">Добавить</el-button>
+            <el-button @click="onCancel" class="buttonCancel">Отменить</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -52,13 +53,13 @@
 export default {
   data() {
     return {
-      amountOfVariants: null,
+      amountOfVariants: '',
       spreadsheetName: 'test #1',
       spreadsheetId: '333',
       spreadsheetInfo: [
-        {title: 'Geography', amount: 5, value: null},
-        {title: 'Biology', amount: 10, value: null},
-        {title: 'Maths', amount: 7, value: null}
+        {title: 'Geography', amount: 5, value: ''},
+        {title: 'Biology', amount: 10, value: ''},
+        {title: 'Maths', amount: 7, value: ''}
         ]
     }
   },

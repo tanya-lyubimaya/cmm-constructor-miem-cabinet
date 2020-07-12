@@ -16,19 +16,18 @@
       <el-button
         type="primary"
         native-type="submit"
-        class="button button-outline"
+        class="button buttonCreate"
         @click="seen = !seen"
       >Создать КИМ</el-button>
 
       <div v-if="seen" id="app">
         <el-form id="cmm-name-form" ref="form" :model="form" label-width="120px">
-          <el-form-item label="Название КИМа">
+          <div>
+            <label for="cmm-name"><p>Название КИМа<span id="star"> *</span></p></label>
             <el-input v-model="form.name" class="input" name="cmm-name" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" native-type="submit" @click="onSubmit">Create</el-button>
-            <el-button @click="onCancel">Cancel</el-button>
-          </el-form-item>
+            <el-button class="buttonCreate" type="primary" native-type="submit" @click="onSubmit">Добавить</el-button>
+            <el-button class="buttonCancel" @click="onCancel">Отменить</el-button>
+          </div>
         </el-form>
       </div>
       <h3 class="title">Мои КИМы</h3>

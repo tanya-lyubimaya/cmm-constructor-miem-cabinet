@@ -25,8 +25,10 @@
           <div>
             <label for="cmm-name"><p>Название КИМа<span id="star"> *</span></p></label>
             <el-input v-model="form.name" class="input" name="cmm-name" />
-            <el-button class="buttonCreate" type="primary" native-type="submit" @click="onSubmit">Добавить</el-button>
-            <el-button class="buttonCancel" @click="onCancel">Отменить</el-button>
+            <div style="margin-top: 1rem">
+              <el-button class="buttonCreate" type="primary" native-type="submit" @click="onSubmit">Добавить</el-button>
+              <el-button class="buttonCancel" @click="onCancel">Отменить</el-button>
+            </div>
           </div>
         </el-form>
       </div>

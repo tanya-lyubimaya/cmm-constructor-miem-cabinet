@@ -2,7 +2,11 @@
   <div class="wraper">
     <div class="navigation">
       <section class="container">
-        <a href="/enter" class="navigation-title">
+        <a
+          class="navigation-title"
+          href="/enter"
+          title="База КИМов - Сервис для преподавателей МИЭМ НИУ ВШЭ"
+        >
           <h1 class="title">База КИМов</h1>
         </a>
       </section>
@@ -24,24 +28,30 @@
           </el-select>
           </el-form>
           
-          <h4>Укажите количество вариантов</h4>
-          <el-input 
-            v-model="amountOfVariants" 
-            type="number" 
-            placeholder="For example, 10" 
-            name="amountOfVariants" 
-            id="amountOfVariants" 
-            min="1">
-          </el-input>
+          <el-form style="margin-top: 1rem">
+            <label for="amountOfVarients">Укажите количество вариантов</p></label>
+            <el-input 
+              v-model="amountOfVariants" 
+              type="number" 
+              placeholder="For example, 10" 
+              name="amountOfVariants" 
+              id="amountOfVariants" 
+              min="1">
+            </el-input>
+          </el-form>
           
           <el-form-item>
-            <el-button
-              type="primary" 
-              id="submit" 
-              native-type="submit" 
-              class="buttonCreate"
-              @click="createVariants">Добавить</el-button>
-            <el-button @click="onCancel" class="buttonCancel">Отменить</el-button>
+            <div style="margin-top: 1rem">
+              <el-button
+                type="primary" 
+                id="submit" 
+                native-type="submit" 
+                class="buttonCreate"
+                @click="createVariants">Добавить</el-button>
+              <el-button 
+                @click="onCancel" 
+                class="buttonCancel">Отменить</el-button>
+            </div>
           </el-form-item>
         </el-form>
       </div>

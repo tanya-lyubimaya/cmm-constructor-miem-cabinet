@@ -20,11 +20,11 @@ h1.title {
 }
 
 h3 {
-    font-size: 1.2em;
+    font-size: 1.2rem;
 }
 
 .buttonCreate, .buttonCancel {
-    font-size: 1rem;
+    font-size: 0.8rem;
     border-radius: 0.2rem;
     width: 12rem;
     height: 2.6rem;
@@ -44,7 +44,8 @@ h3 {
     height: 2.8rem;
     border-radius: 0.2rem;
     width: 24.6rem;
-    margin-bottom: 1rem;
+
+    font-size: 0.8rem;
 }
 
 label {
@@ -53,4 +54,8 @@ label {
 
 span#star {
     color: tomato;
+}
+
+.el-form-item__content {
+    font-size: 1em;
 }

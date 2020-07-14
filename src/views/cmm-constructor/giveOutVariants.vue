@@ -14,6 +14,7 @@
                     <label for="course"><p>Выберите курс</p></label>
                     <el-select 
                         name="course"
+                        required
                         id="course"
                         v-model="selectedCourse">
                         <el-option :key="0" :value="''"></el-option>
@@ -25,28 +26,27 @@
                     <label for="taskName"><p>Укажите название задания</p></label>
                     <el-input 
                         v-model="taskName" 
+                        required
                         name="taskName" 
                         placeholder="For example, Task #1"></el-input>
                     
                     <el-form-item>
                       <p>Выберите время публикации</p>
                       <p>Начало</p>
-                      <el-col :span="8">
-                        <el-date-picker v-model="startDate" type="date" placeholder="Pick a date" style="width: 100%;" />
+                      <el-col :span="4">
+                        <el-date-picker required v-model="startDate" type="date" placeholder="Pick a date" style="width: 100%;" />
                       </el-col>
-                      <el-col :span="1" class="line">-</el-col>
-                      <el-col :span="8">
-                        <el-time-picker v-model="startTime" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
+                      <el-col :span="5">
+                        <el-time-picker required v-model="startTime" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
                       </el-col>
                     </el-form-item>
                     <el-form-item>
                       <p>Окончание</p>
-                      <el-col :span="8">
-                        <el-date-picker v-model="endDate" type="date" placeholder="Pick a date" style="width: 100%;" />
+                      <el-col :span="4">
+                        <el-date-picker required v-model="endDate" type="date" placeholder="Pick a date" style="width: 100%;" />
                       </el-col>
-                      <el-col :span="1" class="line">-</el-col>
-                      <el-col :span="8">
-                        <el-time-picker v-model="endTime" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
+                      <el-col :span="5">
+                        <el-time-picker required v-model="endTime" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
                       </el-col>
                     </el-form-item>
                     <el-form-item>
@@ -58,31 +58,13 @@
                           class="buttonCreate"
                           @click="onSubmit">Сформировать</el-button>
                         <el-button 
-                          @click="onCancel" 
+                          @click="giveOutVariants" 
+                          folder_id = {{ folderId }}
                           class="buttonCancel">Отменить</el-button>
                       </div>
                     </el-form-item>
                 </el-form>
             </div>
-            <!--{% if courses %}
-                <label>Выберите курс, студентам которого необходимо раздать варианты задания</label>
-                <select id="course" name="course" class="select-course">
-                    {% for course in courses %}
-                        <option value="{{ course.courseName }}">{{ course.courseName  }}</option>
-                    {% endfor %}
-                </select>
-                <br><br><label>Укажите название задания</label>
-                <input type="text" placeholder="Например: Контрольная работа 2" id="taskName" name="taskName"><br><br>
-                <label for="appt">Выберите время публикации</label>
-                <small>Задания будут опубликованы: </small>
-                <input type="date" id="start_date" name="start_date" required><br>
-                <input type="time" id="start_time" name="start_time" required><br>
-                <label for="end">Выберите время окончания заданий</label>
-                <small>Задания будут завершены: </small>
-                <input type="date" id="end_date" name="end_date" required><br>
-                <input type="time" id="end_time" name="end_time" required><br>
-                <a class="button" id="submit" onclick="giveOutVariants('{{ folderId }}')">Сформировать</a>
-            {% endif %}-->
         </section>
     </div>
 </template>
@@ -103,14 +85,18 @@ export default {
         startTime: '',
         endDate: '',
         endTime: '',
+        folderId: ''
     }
   },
   methods: {
-    onSubmit() {
-      //this.$message('submit!')
-      //const spreadsheetInfo = JSON.parse(this.dataset.spreadsheetInfo);
-      //const spreadsheetId = this.dataset.spreadsheetId;
-      //createVariants();
+    giveOutVariants(folder_id) {
+      let course = this.selectedCourse;
+      let taskName = this.taskName;
+      let startDate = this.startDate;
+      let startTime = this.startTime;
+      let endDate = this.endDate;
+      let endTime = this.endTime;
+      //window.location.href = `/give_out_variants?course=${course}&taskName=${taskName}&folder_id=${folderId}&startDate=${startDate}&startTime=${startTime}&endDate=${endDate}&endTime=${endTime}`;
     },
     
     onCancel() {

@@ -78,9 +78,9 @@ export default {
       //this.$message('submit!')
       //const spreadsheetInfo = JSON.parse(this.dataset.spreadsheetInfo);
       //const spreadsheetId = this.dataset.spreadsheetId;
-      //createVariants();
+      //createVariants(spreadsheetInfo,spreadsheetId);
     },
-    createVariants() {
+    createVariants(spreadsheetInfo,spreadsheetId) {
       let amount = this.amountOfVariants;
       let questions = [];
       let inpInfo = this.$refs.selectTopics;

@@ -59,3 +59,7 @@ span#star {
 .el-form-item__content {
     font-size: 1em;
 }
+
+.el-date-editor--date .el-input__inner, .el-date-editor--time .el-input__inner{
+    width: 11rem;
+}

@@ -23,8 +23,8 @@
       <div v-if="seen" id="app">
         <el-form id="cmm-name-form" ref="form" :model="form" label-width="120px">
           <div>
-            <label for="cmm-name"><p>Название КИМа<span id="star"> *</span></p></label>
-            <el-input v-model="form.name" class="input" name="cmm-name" />
+            <label for="cmm_name"><p>Название КИМа<span id="star"> *</span></p></label>
+            <el-input v-model="form.cmm_name" class="input" name="cmm_name" />
             <div style="margin-top: 1rem">
               <el-button class="buttonCreate" type="primary" native-type="submit" @click="onSubmit">Добавить</el-button>
               <el-button class="buttonCancel" @click="onCancel">Отменить</el-button>
@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       form: {
-        name: ''
+        cmm_name: ''
       },
       courses: [],
       cmms: [],
@@ -75,10 +75,10 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$message(JSON.stringify(this.form.name))
+      this.$message(JSON.stringify(this.form.cmm_name))
       axios
         .post('http://localhost:5000/cmm-name', {
-          'cmm-name': JSON.stringify(this.form.name)
+          'cmm_name': this.form.cmm_name
         })
         .then(
           response => {

@@ -44,31 +44,21 @@ BOOKS = [
         'read': True
     }
 ]
-"""
+
+
 @app.route('/cmm-name', methods=['GET', 'POST'])
-def all_books():
+def submit_cmm_name():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
-        BOOKS.append({
-            'title': post_data.get('name'),
-            'author': post_data.get('name'),
-            'read': post_data.get('name')
-        })
-        response_object['message'] = 'Book added!'
-        post_data = request.get_json()
-        print('GOT JSON SUCCESSFULLY')
-        #response_object['message'] = post_data.get('name')
-        print(post_data)
-    else:
-        response_object['books'] = BOOKS
+        response_object['cmm_name'] = post_data.get('cmm_name')
+        create_cmm(response_object['cmm_name'], USER_EMAIL)
+        post_user_courses_and_cmms()
     return jsonify(response_object)
-    """
 
 
 @app.route('/user-courses', methods=['GET', 'POST'])
 def post_user_courses_and_cmms():
-    print('post_user_courses_and_cmms')
     authorization(USER_EMAIL)
     courses = get_user_courses(USER_EMAIL)
     cmms = get_user_cmms(USER_EMAIL)
@@ -86,11 +76,11 @@ def main():
     #data = {"courses": courses, "cmms": cmms}
     post_user_courses_and_cmms()
     
-    form = NameForm()
+    """form = NameForm()
     if form.validate_on_submit():
         create_cmm(form.cmm_name.data, USER_EMAIL)
         print('create_cmm')
-        return redirect(url_for('main'))
+        return redirect(url_for('main'))"""
 
     #return render_template('main.html', data=data, form=form)
     return None

@@ -253,6 +253,7 @@ def create_cmm(name, user_email):
     folder_id = create_folder_for_cmm_variants(spreadsheet[0], base_folder_id, drive_service, user_email)
     add_data_to_spreadsheet_table(spreadsheet[0], spreadsheet[1], spreadsheet[2], user_email, folder_id)
 
+    print("New CMM created")
     return print("New CMM created")
 
 

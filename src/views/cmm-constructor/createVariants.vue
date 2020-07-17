@@ -29,7 +29,7 @@
           </el-form>
           
           <el-form style="margin-top: 1rem">
-            <label for="amountOfVarients">Укажите количество вариантов</p></label>
+            <label for="amountOfVarients"><p>Укажите количество вариантов</p></label>
             <el-input 
               v-model="amountOfVariants" 
               type="number" 

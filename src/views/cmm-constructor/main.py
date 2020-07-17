@@ -44,18 +44,18 @@ BOOKS = [
         'read': True
     }
 ]
-
+"""
 @app.route('/cmm-name', methods=['GET', 'POST'])
 def all_books():
     response_object = {'status': 'success'}
     if request.method == 'POST':
-        """post_data = request.get_json()
+        post_data = request.get_json()
         BOOKS.append({
             'title': post_data.get('name'),
             'author': post_data.get('name'),
             'read': post_data.get('name')
         })
-        response_object['message'] = 'Book added!'"""
+        response_object['message'] = 'Book added!'
         post_data = request.get_json()
         print('GOT JSON SUCCESSFULLY')
         #response_object['message'] = post_data.get('name')
@@ -63,6 +63,7 @@ def all_books():
     else:
         response_object['books'] = BOOKS
     return jsonify(response_object)
+    """
 
 
 @app.route('/user-courses', methods=['GET', 'POST'])

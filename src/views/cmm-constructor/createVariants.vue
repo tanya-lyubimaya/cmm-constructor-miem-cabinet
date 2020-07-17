@@ -2,45 +2,56 @@
   <div class="wraper">
     <div class="navigation">
       <section class="container">
-        <a href="/enter" class="navigation-title">
+        <a
+          class="navigation-title"
+          href="/enter"
+          title="База КИМов - Сервис для преподавателей МИЭМ НИУ ВШЭ"
+        >
           <h1 class="title">База КИМов</h1>
         </a>
       </section>
     </div>
     <section class="container" id="base">
-      <h4>Заполните данные для генерации вариантов из КИМа {{ spreadsheetName }} </h4>
+      <h4>Заполните данные для генерации вариантов из КИМа "{{ spreadsheetName }}" </h4>
       <div v-if="spreadsheetInfo">
         <el-form>
           
-          <h4>Укажите количество вопросов из каждого раздела</h4>
+          <p>Укажите количество вопросов из каждого раздела</p>
           
-          <div v-for="info in spreadsheetInfo" :key="info.title">
-          <p>{{ info.title }}</p>
+          <el-form v-for="info in spreadsheetInfo" :key="info.title">
+          <label for="info.title"><p>{{ info.title }}</p></label>
           <el-select ref="selectTopics" name="info.title" v-model="info.value" id="info.title">
             <el-option :key="0" :value="''"></el-option>
             <el-option v-for="i in info.amount" :value="i" :key="i">
               {{ i }}
             </el-option>
           </el-select>
-          </div>
+          </el-form>
           
-          <h4>Укажите количество вариантов</h4>
-          <el-input 
-            v-model="amountOfVariants" 
-            type="number" 
-            placeholder="For example, 10" 
-            name="amountOfVariants" 
-            id="amountOfVariants" 
-            min="1">
-          </el-input>
+          <el-form style="margin-top: 1rem">
+            <label for="amountOfVarients">Укажите количество вариантов</p></label>
+            <el-input 
+              v-model="amountOfVariants" 
+              type="number" 
+              placeholder="For example, 10" 
+              name="amountOfVariants" 
+              id="amountOfVariants" 
+              min="1">
+            </el-input>
+          </el-form>
           
           <el-form-item>
-            <el-button
-              type="primary" 
-              id="submit" 
-              native-type="submit" 
-              @click="createVariants">Create</el-button>
-            <el-button @click="onCancel">Cancel</el-button>
+            <div style="margin-top: 1rem">
+              <el-button
+                type="primary" 
+                id="submit" 
+                native-type="submit" 
+                class="buttonCreate"
+                @click="createVariants">Добавить</el-button>
+              <el-button 
+                @click="onCancel" 
+                class="buttonCancel">Отменить</el-button>
+            </div>
           </el-form-item>
         </el-form>
       </div>
@@ -52,13 +63,13 @@
 export default {
   data() {
     return {
-      amountOfVariants: null,
+      amountOfVariants: '',
       spreadsheetName: 'test #1',
       spreadsheetId: '333',
       spreadsheetInfo: [
-        {title: 'Geography', amount: 5, value: null},
-        {title: 'Biology', amount: 10, value: null},
-        {title: 'Maths', amount: 7, value: null}
+        {title: 'Geography', amount: 5, value: ''},
+        {title: 'Biology', amount: 10, value: ''},
+        {title: 'Maths', amount: 7, value: ''}
         ]
     }
   },
@@ -67,9 +78,9 @@ export default {
       //this.$message('submit!')
       //const spreadsheetInfo = JSON.parse(this.dataset.spreadsheetInfo);
       //const spreadsheetId = this.dataset.spreadsheetId;
-      //createVariants();
+      //createVariants(spreadsheetInfo,spreadsheetId);
     },
-    createVariants() {
+    createVariants(spreadsheetInfo,spreadsheetId) {
       let amount = this.amountOfVariants;
       let questions = [];
       let inpInfo = this.$refs.selectTopics;

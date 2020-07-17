@@ -3,7 +3,7 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
-
+@import './cmm-constructor.css';
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -13,7 +13,7 @@ body {
 }
 
 label {
-  font-weight: 700;
+  font-weight: 100;
 }
 
 html {

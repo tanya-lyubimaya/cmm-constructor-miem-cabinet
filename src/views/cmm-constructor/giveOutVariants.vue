@@ -98,7 +98,9 @@ export default {
       let endTime = this.endTime;
       //window.location.href = `/give_out_variants?course=${course}&taskName=${taskName}&folder_id=${folderId}&startDate=${startDate}&startTime=${startTime}&endDate=${endDate}&endTime=${endTime}`;
     },
-    
+    onSubmit() {
+      this.$message('submit!')
+    },
     onCancel() {
       this.$message({
         message: 'cancel!',

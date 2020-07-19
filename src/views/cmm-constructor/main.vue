@@ -35,7 +35,7 @@
       <h3 class="title">Мои КИМы</h3>
       <div id="cmms-list-wrapper" v-if="cmms.length > 0">
         <ul>
-          <li v-for="(cmm, index) in cmms" :key="cmm.spreadsheetName" @click="toggleActive(index)">{{ index }}) {{ cmm.spreadsheetName }}
+          <li v-for="(cmm, index) in cmms" :key="cmm.spreadsheetName" @click="toggleActive(index)">{{ cmm.spreadsheetName }}
             <div v-if="seenCMM.includes(index)">
               <el-button class="buttonCreate" type="primary" @click="onCancel">Открыть КИМ</el-button>
               <el-button class="buttonCancel" @click="onCancel">Сформировать билеты</el-button>
@@ -112,7 +112,7 @@ created() {
       })
     },
     onDeleteCMM: function(index) {
-      console.log(index)
+      this.cmms.splice(index, 1)
     },
     getCourses() {
       console.log('started method getCourses()')

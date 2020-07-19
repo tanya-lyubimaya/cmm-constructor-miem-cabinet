@@ -15,7 +15,6 @@ schedule = BackgroundScheduler(daemon=True)
 schedule.add_job(set_grades_in_coursework, 'interval', seconds=30)
 schedule.start()
 
-
 class NameForm(FlaskForm):
     cmm_name = StringField('Название КИМа', validators=[DataRequired()])
     submit = SubmitField('ОК')
@@ -26,25 +25,6 @@ app.config['SECRET_KEY'] = 'houston-we-have-a-problem'
 USER_EMAIL = "aavilgelm@miem.hse.ru"
 CORS(app, resources={r'/*': {'origins': '*'}})
 api = Api(app)
-
-BOOKS = [
-    {
-        'title': 'On the Road',
-        'author': 'Jack Kerouac',
-        'read': True
-    },
-    {
-        'title': 'Harry Potter and the Philosopher\'s Stone',
-        'author': 'J. K. Rowling',
-        'read': False
-    },
-    {
-        'title': 'Green Eggs and Ham',
-        'author': 'Dr. Seuss',
-        'read': True
-    }
-]
-
 
 @app.route('/cmm-name', methods=['GET', 'POST'])
 def submit_cmm_name():
@@ -63,6 +43,26 @@ def post_user_courses_and_cmms():
     cmms = get_user_cmms(USER_EMAIL)
     response_object = {'courses': courses}
     response_object['cmms'] = cmms
+    return jsonify(response_object)
+
+"""
+def remove_cmm(cmm_id):
+    cmms = get_user_cmms(USER_EMAIL)
+    for cmm in cmms:
+        if cmm['spreadsheetId'] == cmm_id:
+            cmms.remove(cmm)
+            return True
+    return False
+    """
+
+@app.route('/user-courses', methods=['DELETE'])
+def remove_cmm(cmm_id):
+    print('REMOVE CMM IN PY WORKS')
+    response_object = {'status': 'success'}
+    if request.method == 'DELETE':
+        remove_cmm(cmm_id)
+        response_object['message'] = 'CMM removed!'
+        print('CMM REMOVED IN PY')
     return jsonify(response_object)
 
 @app.route('/main', methods=['GET', 'POST'])

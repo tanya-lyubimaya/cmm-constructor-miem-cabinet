@@ -111,9 +111,22 @@ created() {
         type: 'warning'
       })
     },
+    removeCMM(cmm_id) {
+      const path = `http://localhost:5000/user-courses/${cmm_id}`
+      axios.delete(path)
+        .then(() => {
+          this.getCourses();
+          console.log('Removed cmm successfully!!')
+        })
+        .catch((error) => {
+          console.error(error);
+          this.getCourses();
+        });
+    },
     onDeleteCMM: function(index, cmm_id) {
       this.cmms.splice(index, 1)
       console.log(index, cmm_id)
+      this.removeCMM(cmm_id);
     },
     getCourses() {
       console.log('started method getCourses()')

@@ -42,7 +42,7 @@
               <el-button class="buttonCancel" @click="onCancel">Посмотреть билеты</el-button>
               <el-button class="buttonCancel" @click="onCancel">Раздать билеты</el-button>
               <el-button class="buttonCancel" @click="onCancel">Удалить билеты</el-button>
-              <el-button class="buttonCancel" @click="onDeleteCMM(index)">Удалить КИМ</el-button>
+              <el-button class="buttonCancel" @click="onDeleteCMM(index, cmm.spreadsheetId)">Удалить КИМ</el-button>
             </div>
           </li>
         </ul>
@@ -111,8 +111,9 @@ created() {
         type: 'warning'
       })
     },
-    onDeleteCMM: function(index) {
+    onDeleteCMM: function(index, cmm_id) {
       this.cmms.splice(index, 1)
+      console.log(index, cmm_id)
     },
     getCourses() {
       console.log('started method getCourses()')

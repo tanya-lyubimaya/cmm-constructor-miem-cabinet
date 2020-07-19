@@ -35,15 +35,16 @@
       <h3 class="title">Мои КИМы</h3>
       <div id="cmms-list-wrapper" v-if="cmms.length > 0">
         <ul>
-          <li v-for="cmm of cmms" :key="cmm.spreadsheetName" @click="seenCMM = !seenCMM">{{ cmm.spreadsheetName }}</li>
-          <div v-if="seenCMM">
+          <li v-for="(cmm, index) in cmms" :key="cmm.spreadsheetName" @click="toggleActive(index)">{{ index }}) {{ cmm.spreadsheetName }}
+            <div v-if="seenCMM.includes(index)">
               <el-button class="buttonCreate" type="primary" @click="onCancel">Открыть КИМ</el-button>
               <el-button class="buttonCancel" @click="onCancel">Сформировать билеты</el-button>
               <el-button class="buttonCancel" @click="onCancel">Посмотреть билеты</el-button>
               <el-button class="buttonCancel" @click="onCancel">Раздать билеты</el-button>
               <el-button class="buttonCancel" @click="onCancel">Удалить билеты</el-button>
-              <el-button class="buttonCancel" @click="onCancel">Удалить КИМ</el-button>
-          </div>
+              <el-button class="buttonCancel" @click="onDeleteCMM(index)">Удалить КИМ</el-button>
+            </div>
+          </li>
         </ul>
       </div>
       <div v-else>
@@ -75,9 +76,8 @@ export default {
       courses: [],
       cmms: [],
       msg: 'Hello',
-      showMessage: false,
       seen: false,
-      seenCMM: false,
+      seenCMM: [],
       downloadedCourses: false
     }
   },
@@ -111,8 +111,8 @@ created() {
         type: 'warning'
       })
     },
-    onTap() {
-      window.open('http://news.google.com', '_blank')
+    onDeleteCMM: function(index) {
+      console.log(index)
     },
     getCourses() {
       console.log('started method getCourses()')
@@ -127,7 +127,16 @@ created() {
         },
       this.downloadedCourses = true
       )
-    }
+    },
+    toggleActive(index) {
+      if (this.seenCMM.includes(index)) {
+        this.seenCMM = this.seenCMM.filter(entry => entry !== index);
+
+        return; 
+      }
+
+      this.seenCMM.push(index);
+   }
   }
 }
 </script>

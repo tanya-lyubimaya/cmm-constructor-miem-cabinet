@@ -57,9 +57,12 @@
                           native-type="submit" 
                           class="buttonCreate"
                           @click="onSubmit">Сформировать</el-button>
-                        <el-button 
+                        <!--el-button 
                           @click="giveOutVariants" 
                           folder_id = {{ folderId }}
+                          class="buttonCancel">Отменить</el-button-->
+                          <el-button 
+                          @click="giveOutVariants" 
                           class="buttonCancel">Отменить</el-button>
                       </div>
                     </el-form-item>

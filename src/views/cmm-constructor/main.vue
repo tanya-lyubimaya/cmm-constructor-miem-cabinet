@@ -35,7 +35,15 @@
       <h3 class="title">Мои КИМы</h3>
       <div id="cmms-list-wrapper" v-if="cmms.length > 0">
         <ul>
-          <li v-for="cmm of cmms" :key="cmm.spreadsheetName">{{ cmm.spreadsheetName }}</li>
+          <li v-for="cmm of cmms" :key="cmm.spreadsheetName" @click="seenCMM = !seenCMM">{{ cmm.spreadsheetName }}</li>
+          <div v-if="seenCMM">
+              <el-button class="buttonCreate" type="primary" @click="onCancel">Открыть КИМ</el-button>
+              <el-button class="buttonCancel" @click="onCancel">Сформировать билеты</el-button>
+              <el-button class="buttonCancel" @click="onCancel">Посмотреть билеты</el-button>
+              <el-button class="buttonCancel" @click="onCancel">Раздать билеты</el-button>
+              <el-button class="buttonCancel" @click="onCancel">Удалить билеты</el-button>
+              <el-button class="buttonCancel" @click="onCancel">Удалить КИМ</el-button>
+          </div>
         </ul>
       </div>
       <div v-else>
@@ -56,6 +64,7 @@
 
 <script>
 import axios from 'axios'
+import Vue from 'vue'
 
 export default {
   data() {
@@ -67,15 +76,22 @@ export default {
       cmms: [],
       msg: 'Hello',
       showMessage: false,
-      seen: false
+      seen: false,
+      seenCMM: false,
+      downloadedCourses: false
     }
   },
-  created() {
-    this.getCourses()
-  },
+/*beforeRouteEnter: function(to, from, next) {
+  console.log('before enter')
+  //vm => vm.getCourses()
+  next(vm => vm.getCourses())
+  //next()
+},*/
+created() {
+  this.getCourses()
+},
   methods: {
     onSubmit() {
-      this.$message(JSON.stringify(this.form.cmm_name))
       axios
         .post('http://localhost:5000/cmm-name', {
           'cmm_name': this.form.cmm_name
@@ -95,7 +111,11 @@ export default {
         type: 'warning'
       })
     },
+    onTap() {
+      window.open('http://news.google.com', '_blank')
+    },
     getCourses() {
+      console.log('started method getCourses()')
       const path = 'http://localhost:5000/user-courses'
       axios.get(path).then(
         res => {
@@ -104,7 +124,8 @@ export default {
         },
         error => {
           console.error(error)
-        }
+        },
+      this.downloadedCourses = true
       )
     }
   }

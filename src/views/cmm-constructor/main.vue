@@ -42,7 +42,7 @@
               <el-button class="buttonCancel" @click="onCancel">Посмотреть билеты</el-button>
               <el-button class="buttonCancel" @click="onCancel">Раздать билеты</el-button>
               <el-button class="buttonCancel" @click="onCancel">Удалить билеты</el-button>
-              <el-button class="buttonCancel" @click="onDeleteCMM(index)">Удалить КИМ</el-button>
+              <el-button class="buttonCancel" @click="onDeleteCMM(index, cmm.spreadsheetId)">Удалить КИМ</el-button>
             </div>
           </li>
         </ul>
@@ -87,8 +87,19 @@ export default {
   next(vm => vm.getCourses())
   //next()
 },*/
-created() {
-  this.getCourses()
+beforeCreate() {
+        console.log('started method getCourses()')
+      const path = 'http://localhost:5000/user-courses'
+      axios.get(path).then(
+        res => {
+          this.courses = res.data.courses
+          this.cmms = res.data.cmms
+        },
+        error => {
+          console.error(error)
+        },
+      this.downloadedCourses = true
+      )
 },
   methods: {
     onSubmit() {
@@ -111,8 +122,22 @@ created() {
         type: 'warning'
       })
     },
-    onDeleteCMM: function(index) {
+    removeCMM(cmm_id) {
+      const path = `http://localhost:5000/user-courses/${cmm_id}`
+      axios.delete(path)
+        .then(() => {
+          this.getCourses();
+          console.log('Removed cmm successfully!!')
+        })
+        .catch((error) => {
+          console.error(error);
+          this.getCourses();
+        });
+    },
+    onDeleteCMM: function(index, cmm_id) {
       this.cmms.splice(index, 1)
+      console.log(index, cmm_id)
+      this.removeCMM(cmm_id);
     },
     getCourses() {
       console.log('started method getCourses()')

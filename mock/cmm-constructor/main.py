@@ -72,7 +72,7 @@ def main():
     #cmms = get_user_cmms(USER_EMAIL)
     #data = {"courses": courses, "cmms": cmms}
     post_user_courses_and_cmms()
-    
+
     """form = NameForm()
     if form.validate_on_submit():
         create_cmm(form.cmm_name.data, USER_EMAIL)
@@ -153,6 +153,12 @@ def delete_variants():
     delete_forms(spreadsheet_id)
 
     return redirect(url_for('main'))
+
+
+@app.route('/get_cmms')
+def get_cmms():
+    cmms = get_user_cmms(USER_EMAIL)
+    return jsonify(cmms)
 
 
 if __name__ == '__main__':

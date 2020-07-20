@@ -55,15 +55,13 @@ def remove_cmm(cmm_id):
     return False
     """
 
-@app.route('/user-courses', methods=['DELETE'])
+@app.route('/user-courses/<cmm_id>', methods=['DELETE'])
 def remove_cmm(cmm_id):
-    print('REMOVE CMM IN PY WORKS')
     response_object = {'status': 'success'}
     if request.method == 'DELETE':
-        remove_cmm(cmm_id)
+        delete_cmm(cmm_id, USER_EMAIL)
         response_object['message'] = 'CMM removed!'
-        print('CMM REMOVED IN PY')
-    return jsonify(response_object)
+    return jsonify(response_object), 200
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():

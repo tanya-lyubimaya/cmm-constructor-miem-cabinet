@@ -87,8 +87,19 @@ export default {
   next(vm => vm.getCourses())
   //next()
 },*/
-created() {
-  this.getCourses()
+beforeCreate() {
+        console.log('started method getCourses()')
+      const path = 'http://localhost:5000/user-courses'
+      axios.get(path).then(
+        res => {
+          this.courses = res.data.courses
+          this.cmms = res.data.cmms
+        },
+        error => {
+          console.error(error)
+        },
+      this.downloadedCourses = true
+      )
 },
   methods: {
     onSubmit() {

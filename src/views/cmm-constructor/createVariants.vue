@@ -11,7 +11,7 @@
         </a>
       </section>
     </div>
-    <el-table v-if="cmms.length > 0" ref="singleTable" :data="cmms" style="margin: 7%" @current-change="handle">
+    <el-table v-if="cmms.length > 0" ref="singleTable" :data="cmms" style="margin: 7%" @cell-click="handle">
       <el-table-column
         prop="spreadsheetName"
         label="Имя КИМа"
@@ -24,7 +24,7 @@
       />
     </el-table>
     <section class="container" v-if="chosen" id="base">
-      <h4>Заполните данные для генерации вариантов из КИМа "{{ spreadsheetName }}" </h4>
+      <h4>Заполните данные для генерации вариантов из КИМа "{{ currentCmm }}" </h4>
       <div v-if="spreadsheetInfo">
         <el-form>
           <p>Укажите количество вопросов из каждого раздела</p>
@@ -74,6 +74,7 @@ export default {
   data() {
     return {
       cmms: [],
+      currentCmm: '',
       chosen: false,
       amountOfVariants: '',
       spreadsheetName: 'test #1',
@@ -123,9 +124,9 @@ export default {
         },
       )
     },
-    handle(val) {
+    handle(row) {
       this.chosen = true;
-      console.log(val)
+      this.currentCmm = this.cmms[this.cmms.indexOf(row)].spreadsheetName
       // сделать обработку
     }
     /*function createVariants(spreadsheetInfo, spreadsheetId) {

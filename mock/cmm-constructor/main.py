@@ -33,27 +33,21 @@ def submit_cmm_name():
         post_data = request.get_json()
         response_object['cmm_name'] = post_data.get('cmm_name')
         create_cmm(response_object['cmm_name'], USER_EMAIL)
-        post_user_courses_and_cmms()
+        post_user_cmms()
     return jsonify(response_object)
 
 
 @app.route('/user-courses', methods=['GET', 'POST'])
-def post_user_courses_and_cmms():
+def post_user_courses():
     courses = get_user_courses(USER_EMAIL)
-    cmms = get_user_cmms(USER_EMAIL)
     response_object = {'courses': courses}
-    response_object['cmms'] = cmms
     return jsonify(response_object)
 
-"""
-def remove_cmm(cmm_id):
+@app.route('/user-cmms', methods=['GET', 'POST'])
+def post_user_cmms():
     cmms = get_user_cmms(USER_EMAIL)
-    for cmm in cmms:
-        if cmm['spreadsheetId'] == cmm_id:
-            cmms.remove(cmm)
-            return True
-    return False
-    """
+    response_object = {'cmms': cmms}
+    return jsonify(response_object)
 
 @app.route('/user-courses/<cmm_id>', methods=['DELETE'])
 def remove_cmm(cmm_id):
@@ -69,7 +63,8 @@ def main():
     #courses = get_user_courses(USER_EMAIL)
     #cmms = get_user_cmms(USER_EMAIL)
     #data = {"courses": courses, "cmms": cmms}
-    post_user_courses_and_cmms()
+    post_user_courses()
+    post_user_cmms()
 
     """form = NameForm()
     if form.validate_on_submit():

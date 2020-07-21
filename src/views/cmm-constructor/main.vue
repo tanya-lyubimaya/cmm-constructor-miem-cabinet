@@ -78,7 +78,8 @@ export default {
       msg: 'Hello',
       seen: false,
       seenCMM: [],
-      downloadedCourses: false
+      downloadedCourses: false,
+      gotCourses: false
     }
   },
 /*beforeRouteEnter: function(to, from, next) {
@@ -87,20 +88,13 @@ export default {
   next(vm => vm.getCourses())
   //next()
 },*/
-beforeCreate() {
-        console.log('started method getCourses()')
-      const path = 'http://localhost:5000/user-courses'
-      axios.get(path).then(
-        res => {
-          this.courses = res.data.courses
-          this.cmms = res.data.cmms
-        },
-        error => {
-          console.error(error)
-        },
-      this.downloadedCourses = true
-      )
-},
+  created() {
+    if (localStorage.courses) { 
+      this.courses = JSON.parse(localStorage.getItem('courses'))
+    }
+    else this.getCourses()
+    this.getCMMs()
+  },
   methods: {
     onSubmit() {
       axios
@@ -145,12 +139,24 @@ beforeCreate() {
       axios.get(path).then(
         res => {
           this.courses = res.data.courses
+          localStorage.courses = JSON.stringify(res.data.courses)
+          localStorage.setItem("courses", JSON.stringify(res.data.courses))
+        },
+        error => {
+          console.error(error)
+        },
+      )
+    },
+    getCMMs() {
+      console.log('started method getCMMs()')
+      const path = 'http://localhost:5000/user-cmms'
+      axios.get(path).then(
+        res => {
           this.cmms = res.data.cmms
         },
         error => {
           console.error(error)
         },
-      this.downloadedCourses = true
       )
     },
     toggleActive(index) {

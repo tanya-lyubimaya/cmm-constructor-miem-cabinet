@@ -1,0 +1,12 @@
+Flask
+Blinker
+SimpleJSON
+python-dotenv
+Watchdog
+Flask-WTF
+flask-restful
+flask-cors
+google-api-python-client
+google-auth-oauthlib
+apscheduler
+psycopg2

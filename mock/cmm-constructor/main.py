@@ -55,7 +55,7 @@ def remove_cmm(cmm_id):
     if request.method == 'DELETE':
         delete_cmm(cmm_id, USER_EMAIL)
         response_object['message'] = 'CMM removed!'
-    return jsonify(response_object), 200
+    return jsonify(response_object)
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():

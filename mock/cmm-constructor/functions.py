@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 from random import randint
 import datetime
 from create_forms import fulfill_forms, set_grades
-from database import (search_for_user, add_data_to_user_table, search_for_user_courses, add_data_to_course_table,
+from database import (search_for_user, add_data_to_user_table, search_for_user_courses, add_data_to_student_course_table,
                       search_for_user_course_with_name, update_course_name, delete_course_from_table,
                       update_base_folder_id, add_data_to_spreadsheet_table, search_for_user_cmms,
                       delete_spreadsheet_from_table, search_for_spreadsheet, add_data_to_coursework_table,

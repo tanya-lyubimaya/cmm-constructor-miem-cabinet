@@ -7,7 +7,7 @@ from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
-from database import search_for_spreadsheet
+from database import search_for_spreadsheet, create_tables
 from functions import authorization, get_user_courses, get_user_cmms, create_forms, give_out_forms, \
     create_cmm, delete_cmm, get_info_about_spreadsheet, get_folder_url, delete_forms, set_grades_in_coursework
 
@@ -22,9 +22,11 @@ class NameForm(FlaskForm):
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'houston-we-have-a-problem'
-USER_EMAIL = "aavilgelm@miem.hse.ru"
+USER_EMAIL = "class@miem.hse.ru"
+connection = create_tables(db='cmm_constructor', username='cmm_admin', host='localhost', port='5432', password='Atlirgsu0')
 CORS(app, resources={r'/*': {'origins': '*'}})
 api = Api(app)
+
 
 @app.route('/cmm-name', methods=['GET', 'POST'])
 def submit_cmm_name():
@@ -43,11 +45,13 @@ def post_user_courses():
     response_object = {'courses': courses}
     return jsonify(response_object)
 
+
 @app.route('/user-cmms', methods=['GET', 'POST'])
 def post_user_cmms():
     cmms = get_user_cmms(USER_EMAIL)
     response_object = {'cmms': cmms}
     return jsonify(response_object)
+
 
 @app.route('/user-courses/<cmm_id>', methods=['DELETE'])
 def remove_cmm(cmm_id):

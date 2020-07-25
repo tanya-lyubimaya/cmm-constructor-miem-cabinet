@@ -3,7 +3,6 @@
 import psycopg2
 from psycopg2 import sql
 
-
 """
 Для тех, кто хочет запустить, предварительно нужно поставить postgresql.
 затем создать юзера, поставить на него пароль.
@@ -15,14 +14,15 @@ from psycopg2 import sql
 def create_tables(db, username, password, host, port):
     con = psycopg2.connect(dbname=db, user=username, host=host, port=port, password=password)
     cur = con.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS spreadsheets(id SERIAL PRIMARY KEY, name VARCHAR(200),"
-                "folder_id INTEGER, url VARCHAR(300) UNIQUE NOT NULL)")
+    cur.execute("CREATE TABLE IF NOT EXISTS spreadsheets(s_name VARCHAR(200),"
+                "folder_id INTEGER, url VARCHAR(300) PRIMARY KEY,"
+                "lecturer VARCHAR(200) REFERENCES lecturers NOT NULL)")
     cur.execute("CREATE TABLE IF NOT EXISTS students(email VARCHAR(200) PRIMARY KEY, folder_id INTEGER)")
-    cur.execute("CREATE TABLE IF NOT EXISTS courses(url VARCHAR(300) PRIMARY KEY, name VARCHAR(100) NOT NULL)")
+    cur.execute("CREATE TABLE IF NOT EXISTS courses(url VARCHAR(300) PRIMARY KEY, course_name VARCHAR(100) NOT NULL)")
     cur.execute("CREATE TABLE IF NOT EXISTS courses_students(student VARCHAR(200) REFERENCES students,"
                 " course VARCHAR(300) REFERENCES courses, PRIMARY KEY(student, course))")
-    cur.execute("CREATE TABLE IF NOT EXISTS courseworks(form_url VARCHAR(300) PRIMARY KEY,"
-                "course VARCHAR(300) REFERENCES courses, name VARCHAR(100),"
+    cur.execute("CREATE TABLE IF NOT EXISTS courseworks(id SERIAL PRIMARY KEY, form_url VARCHAR(300) NOT NULL,"
+                "course VARCHAR(300) REFERENCES courses, coursework_name VARCHAR(100),"
                 "start_time timestamp NOT NULL, end_time timestamp NOT NULL)")
     cur.execute("CREATE TABLE IF NOT EXISTS lecturers(email VARCHAR(200) PRIMARY KEY, folder_id INTEGER)")
     cur.execute("CREATE TABLE IF NOT EXISTS courses_lecturers(lecturer VARCHAR(200) REFERENCES lecturers,"
@@ -30,39 +30,44 @@ def create_tables(db, username, password, host, port):
 
     con.commit()
     cur.close()
-    con.close()
+    print("**** CMM_CONSTRUCTOR_LOGS - file: " + __file__ + " - tables created ****")
+    return con
 
 
 def add_data_to_user_table(email, base_folder_id):
     pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
+    # cursor = conn.cursor() Я пока не знаю надо ли оно, возможно надо будет переписывать.
     # cursor.execute("INSERT INTO user VALUES (?, ?)", (email, base_folder_id))
     # conn.commit()
 
 
-def add_data_to_course_table(course_id, course_name, course_url, email):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
-    # cursor.execute("INSERT INTO course VALUES (?, ?, ?, ?)", (course_id, course_name, course_url, email))
-    # conn.commit()
+def add_data_to_student_course_table(con, course_name, course_url, email):
+    """
+    Чтобы избежать sql инъекций, следует использовать метод format в сочетании с классом sql и его методами
+    """
+    cur = con.cursor()
+    cur.execute(sql.SQL("INSERT INTO course VALUES {url, course_name}")
+                   .format(url=sql.Literal(course_url), course_name=sql.Literal(course_name)))
+    cur.execute(sql.SQL("INSERT INTO courses_students VALUES {course, student}")
+                .format(course=sql.Literal(course_url), student=sql.Literal(email)))
+    con.commit()
+    cur.close()
 
 
-def add_data_to_spreadsheet_table(spreadsheet_id, spreadsheet_name, spreadsheet_url, email, folder_id):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
-    # cursor.execute("INSERT INTO spreadsheet VALUES (?, ?, ?, ?, ?)",
-    #                (spreadsheet_id, spreadsheet_name, spreadsheet_url, email, folder_id))
-    # conn.commit()
+def add_data_to_spreadsheet_table(con, spreadsheet_name, spreadsheet_url, email, folder):
+    cur = con.cursor()
+    cur.execute(sql.SQL("INSERT INTO spreadsheets VALUES {s_name, url, lecturer, folder_id}")
+                .format(s_name=sql.SQL(spreadsheet_name), url=sql.Literal(spreadsheet_url),
+                        lecturer=sql.Literal(email), folder_id=sql.Literal(folder)))
+    con.commit()
+    cur.close()
 
 
-def add_data_to_coursework_table(course_id, coursework_id, form_url, student_email, student_id, grade_coursework_id,
+def add_data_to_coursework_table(con, coursework_id, url, course, grade_coursework_id,
                                  end_time):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
+    cur = con.cursor()
+    # cur.execute(sql.SQL("INSERT INTO courseworks VALUES {id, form_url, course}"))
+    # TODO: Разобраться, что такое grade_coursework_id, из названия не сильно понятно
     # cursor.execute("INSERT INTO coursework VALUES (?, ?, ?, ?, ?, ?, ?)",
     #                (course_id, coursework_id, form_url, student_email, student_id, grade_coursework_id, end_time))
     # conn.commit()

@@ -74,12 +74,12 @@ def add_data_to_coursework_table(con, coursework_id, url, course, grade_coursewo
     # print("CW added")
 
 
-def update_course_name(course_id, course_name):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
-    # cursor.execute("UPDATE course SET course_name=? WHERE course_id=?", (course_name, course_id))
-    # conn.commit()
+def update_course_name(con, course, course_name):
+    cur = con.cursor()
+    cur.execute(sql.SQL("UPDATE course SET course_name = {new_name} WHERE url = {course_url}")
+                .format(new_name=sql.Literal(course_name), course_url=sql.Literal(course)))
+    con.commit()
+    cur.close()
 
 
 def update_base_folder_id(base_folder_id, email):
@@ -90,36 +90,42 @@ def update_base_folder_id(base_folder_id, email):
     # conn.commit()
 
 
-def search_for_user(email):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
-    # cursor.execute("SELECT * FROM user WHERE email=?", (email,))
-    # return cursor.fetchall()
+def search_for_lecturer(con, email):
+    cur = con.cursor()
+    cur.execute(sql.SQL("SELECT * FROM lecturers WHERE email = {lecturer_email}")
+                .format(lecturer_email=sql.Literal(email)))
+    result = cur.fetchall()
+    cur.close()
+    return result
 
 
-def search_for_user_courses(email):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
-    # cursor.execute("SELECT * FROM course WHERE email=?", (email,))
-    # return cursor.fetchall()
+def search_for_lecturer_courses(con, email):
+    cur = con.cursor()
+    cur.execute(sql.SQL("SELECT * FROM courses WHERE url IN"
+                "(SELECT course FROM courses_lectures WHERE email = {lecturer_email})")
+                .format(lecturer_email=sql.Literal(email)))
+    result = cur.fetchall()
+    cur.close()
+    return result
 
 
-def search_for_user_course_with_name(email, name):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
-    # cursor.execute("SELECT * FROM course WHERE email=? AND course_name=?", (email, name))
-    # return cursor.fetchall()
+def search_for_user_course_with_name(con, email, name):
+    cur = con.cursor()
+    cur.execute(sql.SQL("SELECT * FROM courses WHERE url IN"
+                "(SELECT course FROM courses_lectures WHERE email = {lecturer_email}) AND course_name = {c_name}")
+                .format(lecturer_email=sql.Literal(email), c_name=sql.Literal(name)))
+    result = cur.fetchall()
+    cur.close()
+    return result
 
 
-def search_for_user_cmms(email):
-    pass
-    # conn = sqlite3.connect('database.db')
-    # cursor = conn.cursor()
-    # cursor.execute("SELECT * FROM spreadsheet WHERE email=?", (email,))
-    # return cursor.fetchall()
+def search_for_user_cmms(con, email):
+    cur = con.cursor()
+    cur.execute(sql.SQL("SELECT * FROM spreadsheets WHERE lecturer = {lecturer_email}")
+                .format(lecturer_email=sql.Literal(email)))
+    result = cur.fetchall()
+    cur.close()
+    return result
 
 
 def search_for_spreadsheet(spreadsheet_id):

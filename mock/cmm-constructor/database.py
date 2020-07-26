@@ -36,14 +36,13 @@ class Database(object):
         cur.close()
         print("**** CMM_CONSTRUCTOR_LOGS - file: " + __file__ + " - tables created ****")
 
-    def add_data_to_student_course_table(self, course_name, course_url, email):
+    def add_data_to_course_table(self, course_name, course_url, email):
         cur = self.con.cursor()
-        cur.execute(sql.SQL("INSERT INTO course VALUES ({url, course_name})")
-                    .format(url=sql.Literal(course_url), course_name=sql.Literal(course_name)))
-        cur.execute(sql.SQL("INSERT INTO courses_students VALUES ({course, student})")
-                    .format(course=sql.Literal(course_url), student=sql.Literal(email)))
+        cur.execute("INSERT INTO courses VALUES (%s, %s)", (course_url, course_name))
+        cur.execute("INSERT INTO courses_lecturers VALUES (%s, %s)", (email, course_url))
         self.con.commit()
         cur.close()
+        print("**** CMM_CONSTRUCTOR_LOGS - file: " + __file__ + " - data to courses table added ****")
 
     def add_data_to_spreadsheet_table(self, spreadsheet_name, spreadsheet_url, email, folder):
         cur = self.con.cursor()
@@ -71,13 +70,13 @@ class Database(object):
     def search_for_lecturer_courses(self, email):
         cur = self.con.cursor()
         cur.execute(sql.SQL("SELECT * FROM courses WHERE url IN"
-                            "(SELECT course FROM courses_lectures WHERE email = {lecturer_email})")
+                            "(SELECT course FROM courses_lecturers WHERE lecturer = {lecturer_email})")
                     .format(lecturer_email=sql.Literal(email)))
         result = cur.fetchall()
         cur.close()
         return result
 
-    def search_for_user_course_with_name(self, email, name):
+    def search_for_user_lecturer_with_name(self, email, name):
         cur = self.con.cursor()
         cur.execute(sql.SQL("SELECT * FROM courses WHERE url IN"
                             "(SELECT course FROM courses_lectures WHERE email = {lecturer_email})"
@@ -118,9 +117,16 @@ class Database(object):
 
     def add_data_to_user_table(self, email, base_folder_id):
         cur = self.con.cursor()
-        cur.execute(sql.SQL("INSERT INTO lecturers VALUES ({email, folder_id})")
-                    .format(email=sql.Literal(email), folder_id=sql.Literal(base_folder_id)))
+        if base_folder_id != "":
+            cur.execute(sql.SQL("INSERT INTO lecturers VALUES ({email, folder_id})")
+                        .format(email=sql.Literal(email), folder_id=sql.Literal(base_folder_id)))
         self.con.commit()
+
+        if base_folder_id == "":
+            cur.execute(sql.SQL("INSERT INTO lecturers VALUES ({email})")
+                        .format(email=sql.Literal(email)))
+            self.con.commit()
+
         cur.close()
 
     def show_all_in_user_table(self):
@@ -206,17 +212,16 @@ class Database(object):
         self.con.commit()
         cur.close()
 
+    def add_data_to_coursework_table(self, coursework_id, url, course, grade_coursework_id,
+                                     end_time):
+        cur = self.con.cursor()
+        # cur.execute(sql.SQL("INSERT INTO courseworks VALUES {id, form_url, course}"))
+        # TODO: Разобраться, что такое grade_coursework_id, из названия не сильно понятно
+        # cursor.execute("INSERT INTO coursework VALUES (?, ?, ?, ?, ?, ?, ?)",
+        #                (course_id, coursework_id, form_url, student_email, student_id, grade_coursework_id, end_time))
+        # conn.commit()
+        # print("CW added")
 
-def add_data_to_coursework_table(con, coursework_id, url, course, grade_coursework_id,
-                                 end_time):
-    pass
-    # cur = con.cursor()
-    # cur.execute(sql.SQL("INSERT INTO courseworks VALUES {id, form_url, course}"))
-    # TODO: Разобраться, что такое grade_coursework_id, из названия не сильно понятно
-    # cursor.execute("INSERT INTO coursework VALUES (?, ?, ?, ?, ?, ?, ?)",
-    #                (course_id, coursework_id, form_url, student_email, student_id, grade_coursework_id, end_time))
-    # conn.commit()
-    # print("CW added")
 
 
 if __name__ == '__main__':

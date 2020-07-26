@@ -8,11 +8,7 @@ from googleapiclient.discovery import build
 from random import randint
 import datetime
 from create_forms import fulfill_forms, set_grades
-from database import (search_for_user, add_data_to_user_table, search_for_user_courses, add_data_to_student_course_table,
-                      search_for_user_course_with_name, update_course_name, delete_course_from_table,
-                      update_base_folder_id, add_data_to_spreadsheet_table, search_for_user_cmms,
-                      delete_spreadsheet_from_table, search_for_spreadsheet, add_data_to_coursework_table,
-                      search_for_unchecked_coursework, delete_coursework_from_table)
+from database import Database
 
 
 SCOPES = ["https://www.googleapis.com/auth/forms",
@@ -106,15 +102,15 @@ def get_spreadsheet_pattern_id():
     return print(files)
 
 
-def authorization(user_email):
-    result = search_for_user(user_email)
+def authorization(db, user_email):
+    result = db.search_for_user(user_email)
     if len(result) == 0:
-        add_data_to_user_table(user_email, "")
+        db.add_data_to_user_table(user_email, "")
 
 
-def get_user_courses(user_email):
+def get_user_courses(db, user_email):
     check_and_update_course_table(user_email)
-    courses_in_database = search_for_user_courses(user_email)
+    courses_in_database = db.search_for_user_courses(user_email)
     courses = []
 
     if len(courses_in_database) != 0:
@@ -129,48 +125,48 @@ def get_user_courses(user_email):
     return courses
 
 
-def check_and_update_course_table(user_email):
+def check_and_update_course_table(db, user_email):
     classroom_service = get_classroom_service()
     results = classroom_service.courses().list(teacherId=user_email).execute()
     courses_from_classroom = results.get('courses', [])
-    courses_from_database = search_for_user_courses(user_email)
+    courses_from_database = db.search_for_lecturer_courses(user_email)
 
     for course_from_classroom in courses_from_classroom:
         flag = False
 
         for course_from_database in courses_from_database:
-            if course_from_classroom['id'] == course_from_database[0]:
+            if course_from_classroom['alternateLink'] == course_from_database[0]:
                 if course_from_classroom['name'] != course_from_database[1]:
-                    update_course_name(course_from_database[0], course_from_classroom['name'])
+                    db.update_course_name(course_from_database[0], course_from_classroom['name'])
                 flag = True
                 break
 
         if not flag:
-            add_data_to_course_table(course_from_classroom['id'], course_from_classroom['name'],
-                                     course_from_classroom['alternateLink'], user_email)
+            db.add_data_to_course_table(course_from_classroom['name'],
+                                        course_from_classroom['alternateLink'], user_email)
 
-    courses_from_database = search_for_user_courses(user_email)
+    courses_from_database = db.search_for_lecturer_courses(user_email)
 
     for course_from_database in courses_from_database:
         flag = False
 
         for course_from_classroom in courses_from_classroom:
-            if course_from_classroom['id'] == course_from_database[0]:
+            if course_from_classroom['alternateLink'] == course_from_database[0]:
                 flag = True
                 break
 
         if not flag:
-            delete_course_from_table(course_from_database[0], user_email)
+            db.delete_course_from_table(course_from_database[0])
 
     return print("Courses table updated")
 
 
-def get_user_cmms(user_email):
-    results = search_for_user(user_email)
+def get_user_cmms(db, user_email):
+    results = db.search_for_user(user_email)
     cmms = []
 
     if results[0][1] != "":
-        cmms_from_database = search_for_user_cmms(user_email)
+        cmms_from_database = db.search_for_user_cmms(user_email)
 
         for cmm in cmms_from_database:
             data = {
@@ -183,7 +179,7 @@ def get_user_cmms(user_email):
     return cmms
 
 
-def create_user_base_folder(drive_service, user_email):
+def create_user_base_folder(db, drive_service, user_email):
     parent_folder = CLASS_BASE_FOLDER_ID
     folder_name = user_email.split('@')[0]
 
@@ -195,7 +191,7 @@ def create_user_base_folder(drive_service, user_email):
 
     folder = drive_service.files().create(body=file_metadata, fields='id').execute()
     folder_id = folder.get('id')
-    update_base_folder_id(folder_id, user_email)
+    db.update_base_folder_id(folder_id, user_email)
 
     return folder_id
 
@@ -238,9 +234,9 @@ def create_folder_for_cmm_variants(name, parent, drive_service, user_email):
     return folder_id
 
 
-def create_cmm(name, user_email):
+def create_cmm(db, name, user_email):
     drive_service = get_drive_service()
-    result = search_for_user(user_email)
+    result = db.search_for_user(user_email)
 
     if result[0][1] == "":
         base_folder_id = create_user_base_folder(drive_service, user_email)
@@ -251,19 +247,19 @@ def create_cmm(name, user_email):
 
     spreadsheet = create_spreadsheet(name, base_folder_id, drive_service, user_email)
     folder_id = create_folder_for_cmm_variants(spreadsheet[0], base_folder_id, drive_service, user_email)
-    add_data_to_spreadsheet_table(spreadsheet[0], spreadsheet[1], spreadsheet[2], user_email, folder_id)
+    db.add_data_to_spreadsheet_table(spreadsheet[0], spreadsheet[1], spreadsheet[2], user_email, folder_id)
 
     print("New CMM created")
     return print("New CMM created")
 
 
-def delete_cmm(spreadsheet_id, user_email):
+def delete_cmm(db, spreadsheet_id, spreadsheet_url, user_email):
     drive_service = get_drive_service()
 
-    spreadsheet = search_for_spreadsheet(spreadsheet_id)
+    spreadsheet = db.search_for_spreadsheet(spreadsheet_url)
     folder_id = spreadsheet[0][4]
 
-    delete_spreadsheet_from_table(spreadsheet_id, user_email)
+    db.delete_spreadsheet_from_table(spreadsheet_url, user_email)
 
     drive_service.files().delete(fileId=spreadsheet_id).execute()
     drive_service.files().delete(fileId=folder_id).execute()
@@ -293,10 +289,10 @@ def get_info_about_spreadsheet(spreadsheet_id):
     return amount_of_questions_per_sheet
 
 
-def create_forms(questions, amount, spreadsheet_id):
+def create_forms(db, questions, amount, spreadsheet_url, spreadsheet_id):
     drive_service = get_drive_service()
 
-    spreadsheet = search_for_spreadsheet(spreadsheet_id)
+    spreadsheet = db.search_for_spreadsheet(spreadsheet_url)
     folder_id = spreadsheet[0][4]
 
     request = "mimeType='application/vnd.google-apps.form' and trashed=false and '" + folder_id + "' in parents"
@@ -318,11 +314,11 @@ def create_forms(questions, amount, spreadsheet_id):
     return print("Forms created")
 
 
-def give_out_forms(folder_id, course_name, task_name, start_date, start_time, end_date, end_time, user_email):
+def give_out_forms(db, folder_id, course_name, task_name, start_date, start_time, end_date, end_time, user_email):
     drive_service = get_drive_service()
     classroom_service = get_classroom_service()
 
-    result = search_for_user_course_with_name(user_email, course_name)
+    result = db.search_for_user_course_with_name(user_email, course_name)
     course_id = result[0][0]
 
     request = "mimeType='application/vnd.google-apps.form' and trashed=false and '" + folder_id + "' in parents"
@@ -402,15 +398,15 @@ def give_out_forms(folder_id, course_name, task_name, start_date, start_time, en
         body = {"assigneeMode": "INDIVIDUAL_STUDENTS",
                 "modifyIndividualStudentsOptions": {"addStudentIds": [user_id]}}
         classroom_service.courses().courseWork().modifyAssignees(courseId=course_id, id=coursework_id, body=body).execute()
-
-        add_data_to_coursework_table(course_id, coursework_id, forms[num].get('webViewLink'), student_email,
+        # TODO: тут точно работает неправильно и нужно исправить
+        db.add_data_to_coursework_table(course_id, coursework_id, forms[num].get('webViewLink'), student_email,
                                      user_id, grades_coursework_id, end_time_to_table)
 
 
-def get_folder_url(spreadsheet_id, user_email):
+def get_folder_url(db, spreadsheet_id, user_email):
     drive_service = get_drive_service()
 
-    result = search_for_user(user_email)
+    result = db.search_for_user(user_email)
     base_folder_id = result[0][1]
 
     request = "mimeType='application/vnd.google-apps.folder' and name='" + spreadsheet_id + "' and trashed=false and '" \
@@ -422,10 +418,10 @@ def get_folder_url(spreadsheet_id, user_email):
     return folder_url
 
 
-def delete_forms(spreadsheet_id):
+def delete_forms(db, spreadsheet_url):
     drive_service = get_drive_service()
 
-    spreadsheet = search_for_spreadsheet(spreadsheet_id)
+    spreadsheet = db.search_for_spreadsheet(spreadsheet_url)
     folder_id = spreadsheet[0][4]
 
     request = "trashed=false and '" + folder_id + "' in parents"
@@ -443,9 +439,11 @@ def delete_coursework_from_course(course_id, coursework_id):
     classroom_service = get_classroom_service()
     classroom_service.courses().courseWork().delete(courseId=course_id, id=coursework_id).execute()
 
+# TODO: да кто такие ваши грейдс?
 
-def set_grades_in_coursework():
-    courseworks = search_for_unchecked_coursework()
+
+def set_grades_in_coursework(db):
+    courseworks = db.search_for_unchecked_coursework()
 
     if courseworks:
         print(courseworks)
@@ -453,7 +451,7 @@ def set_grades_in_coursework():
         for coursework in courseworks:
             set_grades(coursework[0], coursework[2], coursework[3], coursework[4], coursework[5])
             delete_coursework_from_course(coursework[0], coursework[1])
-            delete_coursework_from_table(coursework[2], coursework[4])
+            db.delete_coursework_from_table(coursework[2], coursework[4])
         return print("Grades set")
 
     else:

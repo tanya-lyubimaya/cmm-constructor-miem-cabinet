@@ -18,8 +18,9 @@ class Database(object):
     def create_tables(self):
         cur = self.con.cursor()
         cur.execute("CREATE TABLE IF NOT EXISTS spreadsheets(s_name VARCHAR(200),"
-                    "folder_id INTEGER, url VARCHAR(300) PRIMARY KEY,"
-                    "lecturer VARCHAR(200) REFERENCES lecturers NOT NULL)")
+                    "folder_id INTEGER, url VARCHAR(300) NOT NULL,"
+                    "lecturer VARCHAR(200) REFERENCES lecturers NOT NULL,"
+                    "id VARCHAR(50) PRIMARY KEY)")
         cur.execute("CREATE TABLE IF NOT EXISTS students(email VARCHAR(200) PRIMARY KEY, folder_id INTEGER)")
         cur.execute(
             "CREATE TABLE IF NOT EXISTS courses(url VARCHAR(300) PRIMARY KEY, course_name VARCHAR(100) NOT NULL)")
@@ -44,11 +45,11 @@ class Database(object):
         cur.close()
         print("**** CMM_CONSTRUCTOR_LOGS - file: " + __file__ + " - data to courses table added ****")
 
-    def add_data_to_spreadsheet_table(self, spreadsheet_name, spreadsheet_url, email, folder):
+    def add_data_to_spreadsheet_table(self, spreadsheet_name, spreadsheet_url, email, folder, s_id):
         cur = self.con.cursor()
-        cur.execute(sql.SQL("INSERT INTO spreadsheets VALUES ({s_name, url, lecturer, folder_id})")
+        cur.execute(sql.SQL("INSERT INTO spreadsheets VALUES ({s_name, url, lecturer, folder_id, s_id})")
                     .format(s_name=sql.SQL(spreadsheet_name), url=sql.Literal(spreadsheet_url),
-                            lecturer=sql.Literal(email), folder_id=sql.Literal(folder)))
+                            lecturer=sql.Literal(email), folder_id=sql.Literal(folder), s_id=sql.Literal(s_id)))
         self.con.commit()
         cur.close()
 
@@ -94,10 +95,10 @@ class Database(object):
         cur.close()
         return result
 
-    def search_for_spreadsheet(self, spreadsheet_url):
+    def search_for_spreadsheet(self, spreadsheet_id):
         cur = self.con.cursor()
-        cur.execute(sql.SQL("SELECT * FROM spreadsheets WHERE url = {s_url}")
-                    .format(s_url=sql.Literal(spreadsheet_url)))
+        cur.execute(sql.SQL("SELECT * FROM spreadsheets WHERE id = {s_id}")
+                    .format(s_url=sql.Literal(spreadsheet_id)))
         result = cur.fetchall()
         cur.close()
         return result
@@ -175,10 +176,10 @@ class Database(object):
         self.con.commit()
         cur.close()
 
-    def delete_spreadsheet_from_table(self, spreadsheet_url, email):
+    def delete_spreadsheet_from_table(self, spreadsheet_id, email):
         cur = self.con.cursor()
-        cur.execute(sql.SQL("DELETE FROM spreadsheets WHERE url = {spreadsheet} AND lecturer = {email}")
-                    .format(spreadsheet=sql.Literal(spreadsheet_url), email=sql.Literal(email)))
+        cur.execute(sql.SQL("DELETE FROM spreadsheets WHERE id = {spreadsheet} AND lecturer = {email}")
+                    .format(spreadsheet=sql.Literal(spreadsheet_id), email=sql.Literal(email)))
         self.con.commit()
         cur.close()
 
@@ -221,7 +222,6 @@ class Database(object):
         #                (course_id, coursework_id, form_url, student_email, student_id, grade_coursework_id, end_time))
         # conn.commit()
         # print("CW added")
-
 
 
 if __name__ == '__main__':

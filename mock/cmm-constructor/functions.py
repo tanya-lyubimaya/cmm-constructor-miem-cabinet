@@ -103,22 +103,21 @@ def get_spreadsheet_pattern_id():
 
 
 def authorization(db, user_email):
-    result = db.search_for_user(user_email)
+    result = db.search_for_lecturer(user_email)
     if len(result) == 0:
         db.add_data_to_user_table(user_email, "")
 
 
 def get_user_courses(db, user_email):
-    check_and_update_course_table(user_email)
-    courses_in_database = db.search_for_user_courses(user_email)
+    check_and_update_course_table(db, user_email)
+    courses_in_database = db.search_for_lecturer_courses(user_email)
     courses = []
 
     if len(courses_in_database) != 0:
         for course in courses_in_database:
             data = {
-                "courseId": course[0],
                 "courseName": course[1],
-                "courseUrl": course[2]
+                "courseUrl": course[0]
             }
             courses.append(data)
 
@@ -162,7 +161,7 @@ def check_and_update_course_table(db, user_email):
 
 
 def get_user_cmms(db, user_email):
-    results = db.search_for_user(user_email)
+    results = db.search_for_lecturer(user_email)
     cmms = []
 
     if results[0][1] != "":
@@ -236,7 +235,7 @@ def create_folder_for_cmm_variants(name, parent, drive_service, user_email):
 
 def create_cmm(db, name, user_email):
     drive_service = get_drive_service()
-    result = db.search_for_user(user_email)
+    result = db.search_for_lecturer(user_email)
 
     if result[0][1] == "":
         base_folder_id = create_user_base_folder(drive_service, user_email)
@@ -253,13 +252,13 @@ def create_cmm(db, name, user_email):
     return print("New CMM created")
 
 
-def delete_cmm(db, spreadsheet_id, spreadsheet_url, user_email):
+def delete_cmm(db, spreadsheet_id, user_email):
     drive_service = get_drive_service()
 
-    spreadsheet = db.search_for_spreadsheet(spreadsheet_url)
+    spreadsheet = db.search_for_spreadsheet(spreadsheet_id)
     folder_id = spreadsheet[0][4]
 
-    db.delete_spreadsheet_from_table(spreadsheet_url, user_email)
+    db.delete_spreadsheet_from_table(spreadsheet_id, user_email)
 
     drive_service.files().delete(fileId=spreadsheet_id).execute()
     drive_service.files().delete(fileId=folder_id).execute()
@@ -289,10 +288,10 @@ def get_info_about_spreadsheet(spreadsheet_id):
     return amount_of_questions_per_sheet
 
 
-def create_forms(db, questions, amount, spreadsheet_url, spreadsheet_id):
+def create_forms(db, questions, amount, spreadsheet_id):
     drive_service = get_drive_service()
 
-    spreadsheet = db.search_for_spreadsheet(spreadsheet_url)
+    spreadsheet = db.search_for_spreadsheet(spreadsheet_id)
     folder_id = spreadsheet[0][4]
 
     request = "mimeType='application/vnd.google-apps.form' and trashed=false and '" + folder_id + "' in parents"
@@ -418,10 +417,10 @@ def get_folder_url(db, spreadsheet_id, user_email):
     return folder_url
 
 
-def delete_forms(db, spreadsheet_url):
+def delete_forms(db, spreadsheet_id):
     drive_service = get_drive_service()
 
-    spreadsheet = db.search_for_spreadsheet(spreadsheet_url)
+    spreadsheet = db.search_for_spreadsheet(spreadsheet_id)
     folder_id = spreadsheet[0][4]
 
     request = "trashed=false and '" + folder_id + "' in parents"
@@ -442,7 +441,8 @@ def delete_coursework_from_course(course_id, coursework_id):
 # TODO: да кто такие ваши грейдс?
 
 
-def set_grades_in_coursework(db):
+def set_grades_in_coursework():
+    db = Database(db='cmm_constructor', username='cmm_admin', host='localhost', port='5432', password='Atlirgsu0')
     courseworks = db.search_for_unchecked_coursework()
 
     if courseworks:

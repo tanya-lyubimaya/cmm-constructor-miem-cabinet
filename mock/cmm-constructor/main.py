@@ -7,10 +7,13 @@ from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
-from database import search_for_spreadsheet, create_tables
+from database import Database
 from functions import authorization, get_user_courses, get_user_cmms, create_forms, give_out_forms, \
     create_cmm, delete_cmm, get_info_about_spreadsheet, get_folder_url, delete_forms, set_grades_in_coursework
 
+
+db = Database(db='cmm_constructor', username='cmm_admin', host='localhost', port='5432', password='Atlirgsu0')
+db.create_tables()
 schedule = BackgroundScheduler(daemon=True)
 schedule.add_job(set_grades_in_coursework, 'interval', seconds=30)
 schedule.start()
@@ -23,7 +26,6 @@ class NameForm(FlaskForm):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'houston-we-have-a-problem'
 USER_EMAIL = "class@miem.hse.ru"
-connection = create_tables(db='cmm_constructor', username='cmm_admin', host='localhost', port='5432', password='Atlirgsu0')
 CORS(app, resources={r'/*': {'origins': '*'}})
 api = Api(app)
 
@@ -34,21 +36,21 @@ def submit_cmm_name():
     if request.method == 'POST':
         post_data = request.get_json()
         response_object['cmm_name'] = post_data.get('cmm_name')
-        create_cmm(response_object['cmm_name'], USER_EMAIL)
+        create_cmm(db, response_object['cmm_name'], USER_EMAIL)
         post_user_cmms()
     return jsonify(response_object)
 
 
 @app.route('/user-courses', methods=['GET', 'POST'])
 def post_user_courses():
-    courses = get_user_courses(USER_EMAIL)
+    courses = get_user_courses(db, USER_EMAIL)
     response_object = {'courses': courses}
     return jsonify(response_object)
 
 
 @app.route('/user-cmms', methods=['GET', 'POST'])
 def post_user_cmms():
-    cmms = get_user_cmms(USER_EMAIL)
+    cmms = get_user_cmms(db, USER_EMAIL)
     response_object = {'cmms': cmms}
     return jsonify(response_object)
 
@@ -63,7 +65,7 @@ def remove_cmm(cmm_id):
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():
-    authorization(USER_EMAIL)
+    authorization(db, USER_EMAIL)
     #courses = get_user_courses(USER_EMAIL)
     #cmms = get_user_cmms(USER_EMAIL)
     #data = {"courses": courses, "cmms": cmms}
@@ -119,9 +121,8 @@ def create_variants():
 @app.route('/get_course')
 def get_course():
     spreadsheet_id = request.args.get('spreadsheet_id')
-
-    courses = get_user_courses(USER_EMAIL)
-    spreadsheet = search_for_spreadsheet(spreadsheet_id)
+    courses = get_user_courses(db, USER_EMAIL)
+    spreadsheet = db.search_for_spreadsheet(spreadsheet_url)
     spreadsheet_name = spreadsheet[0][1]
     folder_id = spreadsheet[0][4]
 
@@ -154,7 +155,7 @@ def delete_variants():
 
 @app.route('/get_cmms')
 def get_cmms():
-    cmms = get_user_cmms(USER_EMAIL)
+    cmms = get_user_cmms(db, USER_EMAIL)
     return jsonify(cmms)
 
 
